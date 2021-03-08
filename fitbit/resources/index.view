@@ -1,3 +1,7 @@
-<svg>
-  <rect id="background" />
+<svg class="background">
+  <text id="statusLabel" x="50%" y="50%-15">This is a test status label</text>
+  
+  <use id="demoButton" href="#text-button" class="text-button bottom application-fill bottomButton">
+      <set href="#text" attributeName="text-buffer" to="Just a button" />
+  </use>
 </svg>

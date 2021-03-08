@@ -13,10 +13,17 @@
     "appDisplayName": "OpenKen",
     "iconFile": "resources/icon.png",
     "wipeColor": "#ffffff",
-    "requestedPermissions": [],
     "buildTargets": [
       "atlas",
       "vulcan"
+    ],
+    "requestedPermissions": [
+      "access_activity",
+      "access_sleep",
+      "access_heart_rate",
+      "access_location",
+      "access_internet",
+      "run_background"
     ],
     "i18n": {},
     "defaultLanguage": "en-US"

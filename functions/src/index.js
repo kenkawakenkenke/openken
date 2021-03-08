@@ -1,7 +1,7 @@
 const functions = require("firebase-functions");
 const firebase = require('firebase-admin');
-firebase.initializeApp(functions.config().firebase);
-const firestore = firebase.firestore();
+firebase.initializeApp(functions.config().firebase)
+const { onCallGenerateAccessToken } = require("./access_token_gen.js");
 
 // https://asia-northeast1-open-ken.cloudfunctions.net/submitSensorData
 exports.submitSensorData = functions
@@ -23,3 +23,9 @@ exports.hello = functions.region("asia-northeast1")
         res.status(200).send("Hello cloud functions!");
         return;
     });
+
+exports.generateAccessToken =
+    functions
+        .region("asia-northeast1")
+        .https
+        .onCall(onCallGenerateAccessToken);

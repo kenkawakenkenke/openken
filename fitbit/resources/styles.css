@@ -1,12 +1,22 @@
-.defaultText {
-  font-size: 32;
-  font-family: System-Regular;
-  font-weight: regular;
-  text-length: 32;
+.background {
+  viewport-fill: #000044;
 }
 
-#background {
-  width: 100%;
-  height: 100%;
-  fill: white;
+#statusLabel {
+  fill: #ddddff;
+  font-size: 32;
+  font-family: System-Regular;
+  font-weight: bold;
+  text-anchor: middle;
+  text-length: 99;
+}
+
+.application-fill {
+  fill: fb-yellow;
+}
+.foreground-fill {
+  fill: fb-white;
+}
+.background-fill {
+  fill: fb-black;
 }

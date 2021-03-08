@@ -1,0 +1,15 @@
+.AccessTokenPage {
+  margin: 4px;
+}
+
+.AuthBar {
+  /* background-color: yellow; */
+  margin-bottom: 2px;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+}
+.AuthBar div {
+  margin-right: 8px;
+}
