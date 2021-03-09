@@ -11,8 +11,6 @@ import CompanionUrlRequester from "./companion_requester.js";
 
 import SensorDataCollector from "./sensor_collector.js";
 
-//https://open-ken.web.app/access_token
-
 let mainTextLabel = document.getElementById("statusLabel");
 function showMessage(text) {
     mainTextLabel.text = text;
@@ -23,7 +21,7 @@ function submitReading(data) {
     showMessage(new Date(data.timestamp));
 
     // vibration.start("bump");
-    const baseURL = "https://asia-northeast1-open-ken.cloudfunctions.net/submitSensorData";
+    const baseURL = "https://asia-northeast1-open-ken.cloudfunctions.net/submitFitbitData";
     const serializedData = encodeURIComponent(JSON.stringify(data));
     const requestURL = `${baseURL}?data=${serializedData}`;
 
