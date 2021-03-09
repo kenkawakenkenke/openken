@@ -16,8 +16,6 @@ exports.onSubmitSensorData = async (req, res) => {
         return respond({ status: "err", reason: "invalid data" });
     }
 
-    console.log("received:", accessToken, payload);
-
     // Verify that there's a user for the token.
     const accessTokenRecord = await firestore.collection("accessTokens").doc(accessToken).get();
     if (!accessTokenRecord || !accessTokenRecord.data()) {
