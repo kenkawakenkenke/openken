@@ -22,7 +22,7 @@ messaging.peerSocket.addEventListener("message", (evt) => {
     }
     // fetch: expects a "url" in the payload.
     if (payload.request === "fetch") {
-        console.log("Companion received fetch request:", JSON.stringify(payload));
+        // console.log("Companion received fetch request:", JSON.stringify(payload));
         handleFetch(payload);
         return;
     }

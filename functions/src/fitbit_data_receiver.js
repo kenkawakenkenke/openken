@@ -1,7 +1,7 @@
 const firebase = require('firebase-admin');
 const firestore = firebase.firestore();
 
-exports.onSubmitSensorData = async (req, res) => {
+exports.onSubmitFitbitData = async (req, res) => {
     const respond = (response) =>
         res.status(200).send(JSON.stringify(response));
 
