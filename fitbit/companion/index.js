@@ -8,7 +8,7 @@ import { settingsStorage } from "settings";
 // TODO: allow watch to show an error if we haven't set an access token yet.
 function getAccessToken() {
     const accessTokenEntry = settingsStorage.getItem("accessToken");
-    return accessTokenEntry?.name;
+    return accessTokenEntry && JSON.parse(accessTokenEntry).name;
 };
 
 messaging.peerSocket.addEventListener("open", (evt) => {
@@ -29,7 +29,11 @@ messaging.peerSocket.addEventListener("message", (evt) => {
 });
 
 function handleFetch(payload) {
-    const url = payload.url;
+    // const url = payload.url;
+
+    // TODO: this should be handled by the watch
+    const url = `${payload.url}&token=${getAccessToken()}`;
+
     const requestID = payload.id;
     fetchAndRespond(url, response => {
         messaging.peerSocket.send({
@@ -48,4 +52,3 @@ async function fetchAndRespond(url, callback) {
             return body;
         });
 };
-console.log("companion is here");

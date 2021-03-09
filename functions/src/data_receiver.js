@@ -2,17 +2,25 @@ const firebase = require('firebase-admin');
 const firestore = firebase.firestore();
 
 exports.onSubmitSensorData = async (req, res) => {
-    const respond = (response) => {
+    const respond = (response) =>
         res.status(200).send(JSON.stringify(response));
-    };
 
     const accessToken = req.query.token;
-    const payload = JSON.parse(req.query.data);
-    // payload must contain a timestamp field.
+    let payload;
+    try {
+        payload = JSON.parse(req.query.data);
+    } catch (err) {
+        return respond({ status: "err", reason: "invalid data" });
+    }
+    if (!payload.timestamp) {
+        return respond({ status: "err", reason: "invalid data" });
+    }
+
+    console.log("received:", accessToken, payload);
 
     // Verify that there's a user for the token.
     const accessTokenRecord = await firestore.collection("accessTokens").doc(accessToken).get();
-    if (!accessTokenRecord) {
+    if (!accessTokenRecord || !accessTokenRecord.data()) {
         return respond({ status: "err", reason: "failed auth" });
     }
     const uid = accessTokenRecord.data().uid;

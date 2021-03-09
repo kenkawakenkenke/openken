@@ -21,8 +21,18 @@ function showMessage(text) {
 function submitReading(data) {
     console.log(`Send: ${JSON.stringify(data)}`);
     showMessage(new Date(data.timestamp));
+
+    // vibration.start("bump");
+    const baseURL = "https://asia-northeast1-open-ken.cloudfunctions.net/submitSensorData";
+    const serializedData = encodeURIComponent(JSON.stringify(data));
+    const requestURL = `${baseURL}?data=${serializedData}`;
+
+    requester.request(requestURL,
+        response => {
+            // console.log("got response: " + response);
+        });
 }
-const dataCollector = new SensorDataCollector(5, submitReading);
+const dataCollector = new SensorDataCollector(30, submitReading);
 
 // Ensure we stay alive.
 me.appTimeoutEnabled = false;
@@ -31,21 +41,6 @@ vibration.start("bump");
 showMessage("Waiting for companion app..");
 
 const requester = new CompanionUrlRequester();
-
-// TODO: This should be generated on the device and persisted.
-const deviceId = "kensfitbit";
-
-function notifySleep() {
-    showMessage("Good night!");
-    vibration.start("bump");
-    requester.request(
-        `https://asia-northeast1-stopthemusic-ef911.cloudfunctions.net/fitbitAsleep?k=${deviceId}`,
-        response => {
-            console.log("got response: " + response);
-        });
-    // Let ourselves sleep now.
-    me.appTimeoutEnabled = true;
-}
 
 const simulationButton = document.getElementById("demoButton");
 simulationButton.addEventListener("click", (evt) => {
@@ -68,12 +63,3 @@ messaging.peerSocket.addEventListener("error", (err) => {
     vibration.start("bump");
     showMessage("Woops: " + err.message);
 });
-
-// sleep.onchange = () => {
-//     showMessage("Sleep:" + sleep.state);
-//     console.log(`User sleep state is: ${sleep.state}`);
-//     if (sleep.state === "asleep") {
-//         console.log("Going to sleep!");
-//         notifySleep();
-//     }
-// };
