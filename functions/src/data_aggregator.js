@@ -41,6 +41,11 @@ function aggregate(fitbitData) {
     if (latestFitbitData && latestFitbitData.heartRate) {
         aggregateData.heartRate = latestFitbitData.heartRate;
     }
+
+    if (latestFitbitData && latestFitbitData.chargeLevel) {
+        aggregateData.fitbitChargeLevel = lastFitbitData.chargeLevel;
+    }
+
     // Activity state (asleep, walking, etc).
     aggregateData.activityState = activityState(activityState(latestFitbitData));
 
