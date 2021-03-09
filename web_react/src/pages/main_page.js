@@ -4,7 +4,7 @@ import moment from "moment-timezone";
 import "./main_page.css";
 import { useEffect, useState } from "react";
 
-function HeartRatePane({ dashboardData }) {
+function HeartRateModule({ dashboardData }) {
     const heartRate = dashboardData.heartRate;
 
     return <div className="DataModule">
@@ -14,11 +14,32 @@ function HeartRatePane({ dashboardData }) {
     </div>;
 }
 
+function CurrentTimeModule({ tLastUpdate }) {
+    return <div className="DataModule">
+        <div className="CurrentTimeText">
+            {tLastUpdate.format("HH:mm:ss")}
+        </div>
+    </div>
+}
+
 function formatTimeFromNow(t) {
     const now = moment();
     const duration = moment.duration(now.diff(t), "milliseconds");
     return duration.humanize() + " ago";
     // return duration + " ago";
+}
+
+function usePollingUpdate(updateEveryMs) {
+    const [tPoll, setTPoll] = useState(moment());
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setTPoll(moment().tz("Asia/Tokyo"));
+        }, 1000);
+        return () => {
+            clearInterval(updateEveryMs);
+        }
+    }, []);
+    return tPoll;
 }
 
 function MainPage({ uid }) {
@@ -27,15 +48,7 @@ function MainPage({ uid }) {
         { idField: "docKey" }
     );
 
-    const [tPoll, setTPoll] = useState(moment());
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setTPoll(moment().tz("Asia/Tokyo"));
-        }, 1000);
-        return () => {
-            clearInterval(timer);
-        }
-    }, []);
+    const pollingTime = usePollingUpdate();
 
     if (error) {
         return <div>Error on loading data!</div>;
@@ -45,14 +58,15 @@ function MainPage({ uid }) {
     }
     const tLastUpdate = moment(dashboardData.tLastUpdate.toDate()).tz("Asia/Tokyo");
     return <div className="DashboardPage">
-        <HeartRatePane dashboardData={dashboardData} />
+
+        <HeartRateModule dashboardData={dashboardData} />
+
+        <CurrentTimeModule tLastUpdate={pollingTime} />
 
         <div className="DataModule">
             Last update: {formatTimeFromNow(tLastUpdate)}
         </div>
 
-        <div className="DataModule">{tPoll.format("HH:mm:ss")}
-        </div>
     </div>;
 }
 

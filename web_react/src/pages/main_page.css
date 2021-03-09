@@ -8,6 +8,12 @@
   border-radius: 8px;
   border: solid 1px #555555;
 }
+
 .HeartRateText {
   font-size: 12em;
+}
+
+.CurrentTimeText {
+  font-size: 4em;
+  font-family: "Courier New", Courier, monospace;
 }
