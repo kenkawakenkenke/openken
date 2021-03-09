@@ -2,19 +2,17 @@ const functions = require("firebase-functions");
 const firebase = require('firebase-admin');
 firebase.initializeApp(functions.config().firebase)
 const { onCallGenerateAccessToken } = require("./access_token_gen.js");
+const { onSubmitSensorData } = require("./data_receiver.js");
 
+// Handler for receiving raw data from Fitbit device.
+// Expects parameters:
+// token: access token
+// data: serialized JSON which at least contains timestamp field.
 // https://asia-northeast1-open-ken.cloudfunctions.net/submitSensorData
 exports.submitSensorData = functions
     .region('asia-northeast1')
-    .https.onCall((data, context) => {
-        const uid = context.auth.uid;
-        const sensorData = data.sensorData;
-        console.log(uid, sensorData);
-        return {
-            status: "ok",
-            message: "hello world! " + uid + " " + context.auth.token.name,
-        };
-    });
+    .https
+    .onRequest(onSubmitSensorData);
 
 // https://asia-northeast1-open-ken.cloudfunctions.net/hello
 exports.hello = functions.region("asia-northeast1")
