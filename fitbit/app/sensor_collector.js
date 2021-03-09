@@ -2,6 +2,7 @@
 import { HeartRateSensor } from "heart-rate";
 import { BodyPresenceSensor } from "body-presence";
 import sleep from "sleep"
+import { battery } from "power";
 
 class SensorDataCollector {
     constructor(sendEverySec, callback) {
@@ -11,13 +12,14 @@ class SensorDataCollector {
 
         const body = new BodyPresenceSensor();
         body.start();
-        const hrm = new HeartRateSensor({ frequency: sendEverySec });
+        const hrm = new HeartRateSensor();
         hrm.addEventListener("reading", () => {
             parentThis.latestData = {
                 timestamp: new Date().getTime(),
                 heartRate: hrm.heartRate,
                 available: body.present,
                 sleep: sleep.state,
+                chargeLevel: Math.floor(battery.chargeLevel),
             };
             parentThis.poll();
         });
