@@ -62,16 +62,21 @@ function MainPage({ uid }) {
         return <div>Loading...</div>;
     }
     const tLastUpdate = moment(dashboardData.tLastUpdate.toDate()).tz("Asia/Tokyo");
-    return <div className="DashboardPage">
+    return <div>
+        <h2>OpenKen</h2>
+Where you (primarily my family) can spy on Ken.
 
-        <HeartRateModule dashboardData={dashboardData} />
+        <div className="DashboardPage">
+            <HeartRateModule dashboardData={dashboardData} />
 
-        <CurrentTimeModule tLastUpdate={pollingTime} />
+            <CurrentTimeModule tLastUpdate={pollingTime} />
 
-        <div className="DataModule">
-            Last update: {formatTimeFromNow(tLastUpdate)}
+            <div className="DataModule">
+                Last update: {formatTimeFromNow(tLastUpdate)}
+                <p>Fitbit charge: {dashboardData.fitbitChargeLevel}%</p>
+                <p>Activity state: {dashboardData.activityState}</p>
+            </div>
         </div>
-
     </div>;
 }
 
