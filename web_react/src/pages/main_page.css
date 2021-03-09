@@ -1,0 +1,13 @@
+.DashboardPage {
+  display: flex;
+}
+
+.DataModule {
+  padding: 4px;
+  margin: 4px;
+  border-radius: 8px;
+  border: solid 1px #555555;
+}
+.HeartRateText {
+  font-size: 12em;
+}
