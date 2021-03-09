@@ -8,7 +8,7 @@ async function fetchFitbitData(uid, fromUnixTime) {
         .collection("rawFitbitData")
         .where("uid", "==", uid)
         .where("data.timestamp", ">=", fromUnixTime * 1000)
-        .orderBy("data.timestamp", "desc")
+        .orderBy("data.timestamp", "asc")
         .get();
     let historicalData = [];
     historicalDataRef.forEach(ref => {

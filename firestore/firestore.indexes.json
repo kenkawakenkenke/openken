@@ -10,7 +10,7 @@
         },
         {
           "fieldPath": "data.timestamp",
-          "order": "DESCENDING"
+          "order": "ASCENDING"
         }
       ]
     }
