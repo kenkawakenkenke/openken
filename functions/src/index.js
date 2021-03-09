@@ -3,6 +3,7 @@ const firebase = require('firebase-admin');
 firebase.initializeApp(functions.config().firebase)
 const { onCallGenerateAccessToken } = require("./access_token_gen.js");
 const { onSubmitFitbitData } = require("./fitbit_data_receiver.js");
+const { onSubmitMobileData } = require("./mobile_data_receiver.js");
 const { createPresentationData } = require("./data_aggregator.js");
 
 // https://asia-northeast1-open-ken.cloudfunctions.net/hello
@@ -22,6 +23,13 @@ exports.submitFitbitData = functions
     .region('asia-northeast1')
     .https
     .onRequest(onSubmitFitbitData);
+
+// Handler for receiving raw data from mobile apps.
+exports.submitMobileData =
+    functions
+        .region("asia-northeast1")
+        .https
+        .onCall(onSubmitMobileData);
 
 // Handler for changes to fitbit data, to create a new presentation data
 // by packaging various raw data sources.
