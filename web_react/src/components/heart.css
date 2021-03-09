@@ -2,6 +2,8 @@
   width: 100%;
   height: 100%;
 }
+
+/* Borrowed from https://www.freecodecamp.org/news/how-to-create-a-beating-heart-with-pure-css-for-your-valentine-2aeb05e2d36e/ */
 .heart {
   background-color: red;
   display: inline-block;
