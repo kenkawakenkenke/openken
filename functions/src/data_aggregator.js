@@ -24,8 +24,15 @@ async function fetchFitbitData(uid, fromUnixTime) {
 }
 
 function activityState(maybeLatestFitbitData) {
+    // Asleep always wins.
     if (maybeLatestFitbitData && maybeLatestFitbitData.sleep === "asleep") {
         return "asleep";
+    }
+    // TODO: try to get activities from android.
+
+    // Probably "awake".
+    if (maybeLatestFitbitData) {
+        return maybeLatestFitbitData.sleep;
     }
     return "unknown";
 }
@@ -43,7 +50,7 @@ function aggregate(fitbitData) {
     }
 
     if (latestFitbitData && latestFitbitData.chargeLevel) {
-        aggregateData.fitbitChargeLevel = lastFitbitData.chargeLevel;
+        aggregateData.fitbitChargeLevel = latestFitbitData.chargeLevel;
     }
 
     // Activity state (asleep, walking, etc).
