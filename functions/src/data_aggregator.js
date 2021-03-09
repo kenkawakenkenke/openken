@@ -54,7 +54,7 @@ function aggregate(fitbitData) {
     }
 
     // Activity state (asleep, walking, etc).
-    aggregateData.activityState = activityState(activityState(latestFitbitData));
+    aggregateData.activityState = activityState(latestFitbitData);
 
     // Last update times
     aggregateData.tLastUpdate = lastUpdateTime(latestFitbitData);
