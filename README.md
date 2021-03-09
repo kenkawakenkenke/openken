@@ -15,7 +15,7 @@ OpenKen is a project to allow the world (and family) to spy on Ken's sensor data
 
 ## Fitbit app
 
-The app runs on the fitbit device continuously (which means you need to keep it as the "front" app the whole time), and sends latest data (heart rate, battery level, etc) to the data receiver periodically (currently, every 30 seconds).
+The app runs on the fitbit device continuously (which means you need to keep it as the "front" app the whole time), and sends latest data (heart rate, battery level, etc) to the data receiver periodically (currently, every 30 seconds). This is stored in a raw data collection (rawFitbitData).
 
 In order to identify the user, we made a simple custom authentication solution:
 
@@ -24,6 +24,17 @@ In order to identify the user, we made a simple custom authentication solution:
 - The data receiver dereferences the access token to get the user ID, and stores the data along with the user ID.
 
 (While custom auth solutions are almost always a bad idea, this was the only way I could provide some level of security in the Fibit side (whose restrictions disallow any linking of Firebase libraries) while making the rest of the system work with Firebase auth.)
+
+# Data aggregator
+
+Several Cloud Functions, triggering on new writes of raw data (e.g rawFitbitData), aggregates the last 30 minutes of data for a user and writes it in the Firestore collection realtimeDashboard. This is the data backing the realtime dashboard.
+
+Aggregated data include:
+
+- Realtime heart rate
+- Activity state (asleep, walking, running, etc).
+- (to be implemented) Current location
+- (to be implemented) Activity level plots for the past 30 minutes.
 
 # Setup
 
