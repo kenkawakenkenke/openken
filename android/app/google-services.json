@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "977200409263",
+    "project_id": "open-ken",
+    "storage_bucket": "open-ken.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977200409263:android:4c3eb2a4c226610592425a",
+        "android_client_info": {
+          "package_name": "com.ken.openken"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "977200409263-tmrnk2mcv8vfb2il73mjdi19gq4geeka.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCj-rRxaolYjR0LMBjw1tTym-SUs3YG4yg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "977200409263-tmrnk2mcv8vfb2il73mjdi19gq4geeka.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
