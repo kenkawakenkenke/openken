@@ -1,0 +1,40 @@
+.HeartRect {
+  width: 100%;
+  height: 100%;
+}
+.heart {
+  background-color: red;
+  display: inline-block;
+  height: 50%;
+  width: 50%;
+  left: 25%;
+  top: 30%;
+  position: relative;
+  transform: rotate(-45deg);
+}
+
+.heart:before,
+.heart:after {
+  content: "";
+  background-color: red;
+  border-radius: 50%;
+  height: 100%;
+  position: absolute;
+  width: 100%;
+}
+.heart:before {
+  top: -50%;
+  left: 0;
+}
+.heart:after {
+  left: 50%;
+  top: 0;
+}
+@keyframes heartbeat {
+  0% {
+    transform: rotate(-45deg) scale(1);
+  }
+  10% {
+    transform: rotate(-45deg) scale(1.25);
+  }
+}

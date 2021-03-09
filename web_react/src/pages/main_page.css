@@ -9,8 +9,18 @@
   border: solid 1px #555555;
 }
 
+.HeartRateModule {
+  /* background-color: blue; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
 .HeartRateText {
   font-size: 12em;
+}
+.HeartContainer {
+  width: 100px;
+  height: 100px;
 }
 
 .CurrentTimeText {

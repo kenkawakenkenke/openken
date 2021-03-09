@@ -4,10 +4,15 @@ import moment from "moment-timezone";
 import "./main_page.css";
 import { useEffect, useState } from "react";
 
+import Heart from "../components/heart.js";
+
 function HeartRateModule({ dashboardData }) {
     const heartRate = dashboardData.heartRate;
 
-    return <div className="DataModule">
+    return <div className="DataModule HeartRateModule">
+        <div className="HeartContainer">
+            <Heart bpm={heartRate} />
+        </div>
         <div className="HeartRateText">
             {heartRate}
         </div>
