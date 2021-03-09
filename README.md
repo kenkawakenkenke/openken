@@ -25,7 +25,7 @@ In order to identify the user, we made a simple custom authentication solution:
 
 (While custom auth solutions are almost always a bad idea, this was the only way I could provide some level of security in the Fibit side (whose restrictions disallow any linking of Firebase libraries) while making the rest of the system work with Firebase auth.)
 
-# Data aggregator
+## Data aggregator
 
 Several Cloud Functions, triggering on new writes of raw data (e.g rawFitbitData), aggregates the last 30 minutes of data for a user and writes it in the Firestore collection realtimeDashboard. This is the data backing the realtime dashboard.
 
@@ -35,6 +35,10 @@ Aggregated data include:
 - Activity state (asleep, walking, running, etc).
 - (to be implemented) Current location
 - (to be implemented) Activity level plots for the past 30 minutes.
+
+## Ken Peeker (web dashboard)
+
+Just a react app that monitors the Firestore realtimeDashboard collection for a specified user (by default, Ken) and renders data on the screen.
 
 # Setup
 
