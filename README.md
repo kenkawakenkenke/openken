@@ -4,7 +4,7 @@ OpenKen is a project to allow the world (and family) to spy on Ken's sensor data
 
 # Architecture
 
-Components:
+![OpenKen architecture](rsrc/OpenKen.jpg)
 
 - Fitbit (App on fitbit streams sensor data (heartrate, sleep) to data receiver)
 - Android app (App on Ken's phone streams sensor data (location, phone use) to data receiver)
