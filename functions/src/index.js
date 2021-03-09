@@ -31,9 +31,10 @@ exports.onNewFitbitData
         .firestore
         .document('rawFitbitData/{docId}')
         .onCreate(async (fitbitData, context) => {
-            createPresentationData({
-                fitbitData: fitbitData.data()
-            });
+            const fitbitSnapshot = fitbitData.data();
+            createPresentationData(
+                fitbitSnapshot.uid,
+                { fitbitData: fitbitSnapshot.data });
             return 0;
         });
 
