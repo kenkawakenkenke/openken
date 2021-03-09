@@ -37,7 +37,7 @@ class SensorDataCollector {
         const now = new Date().getTime();
         const tSinceLastSend = now - (this.lastSent || 0);
         if (tSinceLastSend < this.sendEveryMs) {
-            // console.log("abort: not enough time: " + tSinceLastSend);
+            console.log("abort: not enough time: " + tSinceLastSend);
             return;
         }
         this.lastSent = now;
