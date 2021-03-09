@@ -3,10 +3,13 @@
  */
 import * as messaging from "messaging";
 import { me } from "companion";
-console.log(me.host.app);
-console.log(me.host);
+import { settingsStorage } from "settings";
 
-console.log("Companion code started");
+// TODO: allow watch to show an error if we haven't set an access token yet.
+function getAccessToken() {
+    const accessTokenEntry = settingsStorage.getItem("accessToken");
+    return accessTokenEntry?.name;
+};
 
 messaging.peerSocket.addEventListener("open", (evt) => {
     console.log("Ready to send or receive messages on the companion");

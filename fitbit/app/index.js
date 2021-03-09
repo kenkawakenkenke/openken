@@ -6,9 +6,12 @@ import document from "document";
 import sleep from "sleep";
 import { vibration } from "haptics";
 import * as messaging from "messaging";
+
 import CompanionUrlRequester from "./companion_requester.js";
 
 import SensorDataCollector from "./sensor_collector.js";
+
+//https://open-ken.web.app/access_token
 
 let mainTextLabel = document.getElementById("statusLabel");
 function showMessage(text) {
@@ -46,7 +49,7 @@ function notifySleep() {
 
 const simulationButton = document.getElementById("demoButton");
 simulationButton.addEventListener("click", (evt) => {
-    notifySleep();
+    // notifySleep();
 });
 
 messaging.peerSocket.addEventListener("open", (evt) => {
