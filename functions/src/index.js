@@ -39,10 +39,19 @@ exports.onNewFitbitData
         .firestore
         .document('rawFitbitData/{docId}')
         .onCreate(async (fitbitData, context) => {
-            const fitbitSnapshot = fitbitData.data();
-            createPresentationData(
-                fitbitSnapshot.uid,
-                { fitbitData: fitbitSnapshot.data });
+            createPresentationData(fitbitData.data().uid);
+            return 0;
+        });
+
+// Handler for changes to mobile data, to create a new presentation data
+// by packaging various raw data sources.
+exports.onNewFitbitData
+    = functions
+        .region('asia-northeast1')
+        .firestore
+        .document('rawMobileData/{docId}')
+        .onCreate(async (mobileData, context) => {
+            createPresentationData(mobileData.data().uid);
             return 0;
         });
 

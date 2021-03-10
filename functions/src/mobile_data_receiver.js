@@ -12,9 +12,13 @@ exports.onSubmitMobileData =
         const uid = context.auth.uid;
 
         console.log("received", uid, data);
-
-        return {
-            status: "ok",
-        };
+        // Just save it in firestore
+        const doc = firestore
+            .collection("rawMobileData")
+            .doc(`${uid}_${data.timestamp}`);
+        await doc.set({
+            uid,
+            data,
+        });
     };
 

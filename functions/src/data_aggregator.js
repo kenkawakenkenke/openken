@@ -23,25 +23,61 @@ async function fetchFitbitData(uid, fromUnixTime) {
     return historicalData;
 }
 
-function activityState(maybeLatestFitbitData) {
+async function fetchMobileData(uid, fromUnixTime) {
+    // Fetch fitbit data from past 30 minutes.
+    const historicalDataRef = await firestore
+        .collection("rawMobileData")
+        .where("uid", "==", uid)
+        .where("data.timestamp", ">=", fromUnixTime * 1000)
+        .orderBy("data.timestamp", "asc")
+        .get();
+    let historicalData = [];
+    historicalDataRef.forEach(ref => {
+        const mobileRecord = ref.data();
+        const data = mobileRecord.data;
+        // Make it a little easier to use.
+        historicalData.push({
+            ...data,
+            t: moment(data.timestamp).tz("Asia/Tokyo"),
+        });
+    });
+    return historicalData;
+}
+
+function activityState(maybeLatestFitbitData, maybeLatestMobileData) {
     // Asleep always wins.
     if (maybeLatestFitbitData && maybeLatestFitbitData.sleep === "asleep") {
         return "asleep";
     }
-    // TODO: try to get activities from android.
-
+    if (maybeLatestMobileData && maybeLatestMobileData.activity) {
+        return maybeLatestMobileData.activity;
+    }
     // Probably "awake".
     if (maybeLatestFitbitData) {
         return maybeLatestFitbitData.sleep;
     }
     return "unknown";
 }
-function lastUpdateTime(maybeLatestFitbitData) {
-    const tLastFitbitTime = maybeLatestFitbitData && maybeLatestFitbitData.t;
-    return tLastFitbitTime;
+function lastUpdateTime(maybeLatestFitbitData, maybeLatestMobileData) {
+    let time = {};
+    if (maybeLatestFitbitData) {
+        time.fitbit = maybeLatestFitbitData.t;
+    }
+    if (maybeLatestMobileData) {
+        time.mobile = maybeLatestMobileData.t;
+    }
+    return time;
 }
-function aggregate(fitbitData) {
+function getLocation(mobileData) {
+    // TODO: fuzz out for sensitive locations.
+    return mobileData.map(mobileRecord => ({
+        latitude: mobileRecord.location.latitude,
+        longitude: mobileRecord.location.longitude,
+    }));
+}
+function aggregate(fitbitData, mobileData) {
     const latestFitbitData = fitbitData.length > 0 && fitbitData[fitbitData.length - 1];
+    const latestMobileData = mobileData.length > 0 && mobileData[mobileData.length - 1];
 
     let aggregateData = {};
     // Realtime heart rate
@@ -54,22 +90,26 @@ function aggregate(fitbitData) {
     }
 
     // Activity state (asleep, walking, etc).
-    aggregateData.activityState = activityState(latestFitbitData);
+    aggregateData.activityState = activityState(latestFitbitData, latestMobileData);
+
+    // Location data
+    aggregateData.location = getLocation(mobileData);
 
     // Last update times
-    aggregateData.tLastUpdate = lastUpdateTime(latestFitbitData);
+    aggregateData.tLastUpdate = lastUpdateTime(latestFitbitData, latestMobileData);
 
     return aggregateData;
 }
 
-exports.createPresentationData = async (uid, latestSnapshot) => {
-    const historicalTimeCutoff = moment().add(-30, "minutes");
+exports.createPresentationData = async (uid) => {
+    const historicalTimeCutoff = moment().add(-10, "minutes");
 
     const fitbitData = await fetchFitbitData(uid, historicalTimeCutoff.unix());
+    const mobileData = await fetchMobileData(uid, historicalTimeCutoff.unix());
     // Do the same for android data.
 
     // Roll them up,
-    const aggregatedData = aggregate(fitbitData);
+    const aggregatedData = aggregate(fitbitData, mobileData);
 
     console.log(aggregatedData);
     // Save.

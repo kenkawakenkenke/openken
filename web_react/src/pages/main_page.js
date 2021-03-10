@@ -28,6 +28,9 @@ function CurrentTimeModule({ tLastUpdate }) {
 }
 
 function formatTimeFromNow(t) {
+    if (!t) {
+        return "No data";
+    }
     const now = moment();
     const duration = moment.duration(now.diff(t), "milliseconds");
     return duration.humanize() + " ago";
@@ -47,6 +50,17 @@ function usePollingUpdate(updateEveryMs) {
     return tPoll;
 }
 
+function MetadataModule({ dashboardData }) {
+    const fitbitUpdateTime = dashboardData.tLastUpdate.fitbit && moment(dashboardData.tLastUpdate.fitbit.toDate()).tz("Asia/Tokyo");
+    const mobileUpdateTime = dashboardData.tLastUpdate.mobile && moment(dashboardData.tLastUpdate.mobile.toDate()).tz("Asia/Tokyo");
+
+    return <div className="DataModule">
+        <p>Fitbit last update: {formatTimeFromNow(fitbitUpdateTime)}</p>
+        <p>Mobile last update: {formatTimeFromNow(mobileUpdateTime)}</p>
+        <p>Fitbit charge: {dashboardData.fitbitChargeLevel}%</p>
+        <p>Activity state: {dashboardData.activityState}</p>
+    </div>;
+}
 function MainPage({ uid }) {
     const [dashboardData, loading, error] = useDocumentData(
         firebase.firestore().collection("realtimeDashboard").doc(uid),
@@ -61,7 +75,7 @@ function MainPage({ uid }) {
     if (loading) {
         return <div>Loading...</div>;
     }
-    const tLastUpdate = moment(dashboardData.tLastUpdate.toDate()).tz("Asia/Tokyo");
+
     return <div>
         <h2>OpenKen</h2>
 Where you (primarily my family) can spy on Ken.
@@ -71,11 +85,7 @@ Where you (primarily my family) can spy on Ken.
 
             <CurrentTimeModule tLastUpdate={pollingTime} />
 
-            <div className="DataModule">
-                Last update: {formatTimeFromNow(tLastUpdate)}
-                <p>Fitbit charge: {dashboardData.fitbitChargeLevel}%</p>
-                <p>Activity state: {dashboardData.activityState}</p>
-            </div>
+            <MetadataModule dashboardData={dashboardData} />
         </div>
     </div>;
 }
