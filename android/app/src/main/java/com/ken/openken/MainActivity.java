@@ -1,12 +1,12 @@
 package com.ken.openken;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.annotation.NonNull;
@@ -14,32 +14,28 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.util.Log;
-import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
+import com.ken.openken.service.DataLoggerService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,6 +70,13 @@ public class MainActivity extends AppCompatActivity {
         Button btnSend = findViewById(R.id.btnSendData);
         btnSend.setOnClickListener((view)-> {
             sendTestData();
+        });
+
+        findViewById(R.id.btnStartService).setOnClickListener((view)-> {
+            checkMultiPermissions();
+        });
+        findViewById(R.id.btnStopService).setOnClickListener((view)-> {
+            stopLocationService();
         });
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -212,5 +215,44 @@ public class MainActivity extends AppCompatActivity {
                         return result;
                     }
                 });
+    }
+
+    private static final int REQUEST_MULTI_PERMISSIONS = 101;
+    private  void checkMultiPermissions(){
+        ArrayList reqPermissions = new ArrayList<>();
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            reqPermissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            reqPermissions.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
+            reqPermissions.add(Manifest.permission.ACTIVITY_RECOGNITION);
+        }
+
+        // 未許可
+        if (!reqPermissions.isEmpty()) {
+            ActivityCompat.requestPermissions(this,
+                    (String[]) reqPermissions.toArray(new String[0]),
+                    REQUEST_MULTI_PERMISSIONS);
+            // 未許可あり
+        }
+        else{
+            // 許可済
+            startLocationService();
+        }
+    }
+    public void startLocationService() {
+        Log.w("zzz", "actually start");
+        Intent intent = new Intent(getApplication(), DataLoggerService.class);
+        startForegroundService(intent);
+    }
+    public void stopLocationService() {
+        Intent intent = new Intent(getApplication(), DataLoggerService.class);
+        stopService(intent);
     }
 }
