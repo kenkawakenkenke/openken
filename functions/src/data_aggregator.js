@@ -71,6 +71,7 @@ function lastUpdateTime(maybeLatestFitbitData, maybeLatestMobileData) {
 function getLocation(mobileData) {
     // TODO: fuzz out for sensitive locations.
     return mobileData.map(mobileRecord => ({
+        t: mobileRecord.t,
         latitude: mobileRecord.location.latitude,
         longitude: mobileRecord.location.longitude,
     }));

@@ -1,5 +1,6 @@
 .DashboardPage {
   display: flex;
+  flex-flow: row wrap;
 }
 
 .DataModule {
@@ -7,6 +8,11 @@
   margin: 4px;
   border-radius: 8px;
   border: solid 1px #555555;
+}
+
+.ActivityStateModule {
+  font-size: 4em;
+  width: 200px;
 }
 
 .HeartRateModule {

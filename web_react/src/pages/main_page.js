@@ -6,8 +6,32 @@ import { useEffect, useState } from "react";
 
 import Heart from "../components/heart.js";
 
+function ActivityStateModule({ dashboardData }) {
+    const heartRate = dashboardData.heartRate;
+
+    return <div className="DataModule ActivityStateModule">
+        <p>Ken is: {dashboardData.activityState}</p>
+    </div>;
+}
+
 function HeartRateModule({ dashboardData }) {
     const heartRate = dashboardData.heartRate;
+
+    if (!dashboardData.tLastUpdate.fitbit) {
+        return <div className="DataModule HeartRateModule"></div>;
+    }
+    const now = moment();
+    const duration = moment.duration(now.diff(moment(dashboardData.tLastUpdate.fitbit.toDate())), "milliseconds");
+    if (duration.asSeconds() > 120) {
+        return <div className="DataModule HeartRateModule">
+            <div className="HeartContainer">
+                <Heart bpm={0} />
+            </div>
+            <div className="HeartRateText">
+                -
+                     </div>
+        </div>;
+    }
 
     return <div className="DataModule HeartRateModule">
         <div className="HeartContainer">
@@ -56,9 +80,8 @@ function MetadataModule({ dashboardData }) {
 
     return <div className="DataModule">
         <p>Fitbit last update: {formatTimeFromNow(fitbitUpdateTime)}</p>
+        <p>Fitbit charge🔋: {dashboardData.fitbitChargeLevel}%</p>
         <p>Mobile last update: {formatTimeFromNow(mobileUpdateTime)}</p>
-        <p>Fitbit charge: {dashboardData.fitbitChargeLevel}%</p>
-        <p>Activity state: {dashboardData.activityState}</p>
     </div>;
 }
 function MainPage({ uid }) {
@@ -81,6 +104,7 @@ function MainPage({ uid }) {
 Where you (primarily my family) can spy on Ken.
 
         <div className="DashboardPage">
+            <ActivityStateModule dashboardData={dashboardData} />
             <HeartRateModule dashboardData={dashboardData} />
 
             <CurrentTimeModule tLastUpdate={pollingTime} />
