@@ -12,9 +12,16 @@ import android.location.Location;
 import android.os.IBinder;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
 import com.ken.openken.R;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,27 +42,29 @@ public class DataLoggerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Start a foreground notification to let us keep collecting location in the (sort of) background.
-        startForegroundNotification(intent);
+//        startForegroundNotification(intent);
+        startForegroundNotification("OpenKenデータ収集サービスが動いています");
 
         locationReceiver = new LocationReceiver(this, location -> {
             latestLocation = location;
-            notifyDataUpdate();
+            notifyDataUpdate("location");
         });
         locationReceiver.start();
 
         ActivityDetectionService.startActivityDetectionService(this, newActivityState -> {
             latestActivityState = newActivityState;
-            notifyDataUpdate();
+            notifyDataUpdate("activity");
         });
         return START_NOT_STICKY;
     }
 
-    private void startForegroundNotification(Intent intent) {
+    private void startForegroundNotification(String message) {
+//    private void startForegroundNotification(Intent intent) {
         String channelId = "default";
         String title = getString(R.string.app_name);
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(this, 0,
-                        intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        PendingIntent pendingIntent =
+//                PendingIntent.getActivity(this, 0,
+//                        intent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationChannel channel = new NotificationChannel(
@@ -70,21 +79,21 @@ public class DataLoggerService extends Service {
         Notification notification = new Notification.Builder(this, channelId)
                 .setContentTitle(title)
                 .setSmallIcon(android.R.drawable.ic_menu_mylocation)
-                .setContentText("OpenKenデータ収集サービスが動いています")
+                .setContentText(message)
                 .setAutoCancel(true)
-                .setContentIntent(pendingIntent)
+//                .setContentIntent(pendingIntent)
                 .setWhen(System.currentTimeMillis())
                 .build();
         startForeground(1, notification);
     }
 
-    public void notifyDataUpdate() {
-        Log.w("zzz", "data update: "
+    public void notifyDataUpdate(String updatedDataset) {
+        Log.w("zzz", "data update for "+updatedDataset+": "
             + "activity="+ latestActivityState
             +" location="+latestLocation);
 
         Map<String, Object> data = new HashMap<>();
-        data.put("timestamp", new Date());
+        data.put("timestamp", new Date().getTime());
         if (latestActivityState!=null) {
             data.put("activity", latestActivityState);
         }
@@ -101,7 +110,26 @@ public class DataLoggerService extends Service {
         }
         functions
                 .getHttpsCallable("submitMobileData")
-                .call(data);
+                .call(data)
+                .continueWith(new Continuation<HttpsCallableResult, String>() {
+                    @Override
+                    public String then(@NonNull Task<HttpsCallableResult> task) throws Exception {
+                        ZonedDateTime zonedDateTime = ZonedDateTime.now();
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd HH:mm:ss");
+                        String timeStr = zonedDateTime.format(formatter);
+                        try {
+                            startForegroundNotification(timeStr+" updated "+updatedDataset);
+
+                            String result = (String) task.getResult().getData();
+                            Log.w("zzz", "result: " + result);
+                            return result;
+                        }catch(Exception e) {
+                            Log.w("zzz", "exception in getresult: "+e);
+                            startForegroundNotification(timeStr+" updated "+updatedDataset+" but failed send");
+                        }
+                        return "";
+                    }
+                });
     }
 
     @Override
