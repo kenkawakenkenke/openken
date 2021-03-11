@@ -43,10 +43,10 @@ public class DataLoggerService extends Service {
         });
         locationReceiver.start();
 
-        ActivityDetectionService.startActivityDetectionService(this,newActivityState -> {
+        ActivityDetectionService.startActivityDetectionService(this, newActivityState -> {
             latestActivityState = newActivityState;
             notifyDataUpdate();
-        } );
+        });
         return START_NOT_STICKY;
     }
 
