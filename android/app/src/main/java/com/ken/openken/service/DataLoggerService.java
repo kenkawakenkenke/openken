@@ -84,7 +84,7 @@ public class DataLoggerService extends Service {
             +" location="+latestLocation);
 
         Map<String, Object> data = new HashMap<>();
-        data.put("timestamp", new Date().getTime());
+        data.put("timestamp", new Date());
         if (latestActivityState!=null) {
             data.put("activity", latestActivityState);
         }
