@@ -12,14 +12,14 @@ async function sendData(data, accessToken) {
 const data = {
     timestamp: new Date().getTime(),
     available: true,
-    chargeLevel: 78,
-    heartRate: 90,
-    sleep: "awake",
+    chargeLevel: Math.floor(Math.random() * 100),
+    heartRate: Math.floor(80 + Math.random() * 20),
+    sleep: Math.random() < 0.5 ? "awake" : "asleep",
 };
 
 (async () => {
     // Note, this is just an example access token, so we're not leaking anything here.
-    const accessToken = "Ey2fon0qd6ONFT8J63Ymiv3JLGwFWQaL9LN0Q8n7FlMJ00Fp";
+    const accessToken = "9EGJGNDmTTdBHr1FgVQ463isumnDxN0dzEIP1RpogupRaGPE";
 
     await sendData(data, accessToken);
 })();
