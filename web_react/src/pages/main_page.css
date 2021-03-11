@@ -16,10 +16,17 @@
 }
 
 .HeartRateModule {
-  /* background-color: blue; */
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+.HeartRateAndWarning {
+}
+.HeartRateAndIcon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  /* align-self: center; */
 }
 .HeartRateText {
   font-size: 12em;
@@ -27,6 +34,10 @@
 .HeartContainer {
   width: 100px;
   height: 100px;
+}
+.HeartRateWarning {
+  color: red;
+  font-size: 2em;
 }
 
 .CurrentTimeText {

@@ -7,39 +7,56 @@ import { useEffect, useState } from "react";
 import Heart from "../components/heart.js";
 import MapModule from "./map_module.js";
 
+
 function ActivityStateModule({ dashboardData }) {
-    const heartRate = dashboardData.heartRate;
+    function textForActivity(activity) {
+        switch (activity) {
+            case "vehicle":
+                return "Ken is in a vehicle";
+            case "bicycle":
+                return "Ken is on a bicycle";
+            case "still":
+            case "walking":
+            case "running":
+            case "asleep":
+            case "awake":
+                return `Ken is ${activity}`;
+            default:
+                return "Unknown";
+        }
+    }
 
     return <div className="DataModule ActivityStateModule">
-        <p>Ken is: {dashboardData.activityState}</p>
+        <p>{textForActivity(dashboardData.activityState)}</p>
     </div>;
 }
 
 function HeartRateModule({ dashboardData }) {
-    const heartRate = dashboardData.heartRate;
-
     if (!dashboardData.tLastUpdate.fitbit) {
-        return <div className="DataModule HeartRateModule"></div>;
+        return <div></div>;
     }
+    let heartRate = dashboardData.heartRate;
+    let heartRateText = heartRate;
+    let warningText = "";
     const now = moment();
     const duration = moment.duration(now.diff(moment(dashboardData.tLastUpdate.fitbit.toDate())), "milliseconds");
     if (duration.asSeconds() > 120) {
-        return <div className="DataModule HeartRateModule">
-            <div className="HeartContainer">
-                <Heart bpm={0} />
-            </div>
-            <div className="HeartRateText">
-                -
-                     </div>
-        </div>;
+        heartRate = 0;
+        heartRateText = "-";
+        warningText = "No data for 2 minutes";
     }
 
     return <div className="DataModule HeartRateModule">
-        <div className="HeartContainer">
-            <Heart bpm={heartRate} />
-        </div>
-        <div className="HeartRateText">
-            {heartRate}
+        <div className="HeartRateAndWarning">
+            <div className="HeartRateAndIcon">
+                <div className="HeartContainer">
+                    <Heart bpm={heartRate} />
+                </div>
+                <div className="HeartRateText">
+                    {heartRateText}
+                </div>
+            </div>
+            <div className="HeartRateWarning">{warningText}</div>
         </div>
     </div>;
 }
@@ -91,11 +108,11 @@ function MainPage({ uid }) {
         { idField: "docKey" }
     );
 
-    const [locationDump, locationloading, locationerror] = useCollectionDataOnce(
-        firebase.firestore().collection("rawMobileData")
-            .orderBy("data.timestamp", "asc"),
-        { idField: "docKey" }
-    );
+    // const [locationDump, locationloading, locationerror] = useCollectionDataOnce(
+    //     firebase.firestore().collection("rawMobileData")
+    //         .orderBy("data.timestamp", "asc"),
+    //     { idField: "docKey" }
+    // );
 
     const pollingTime = usePollingUpdate();
 
@@ -106,30 +123,28 @@ function MainPage({ uid }) {
         return <div>Loading...</div>;
     }
 
-    let locationDumpData = [];
-    if (!locationloading && !locationerror && locationDump) {
-        locationDumpData =
-            locationDump
-                .map(record => record.data.location)
-                .filter(location => location)
-            ;
-    }
+    // let locationDumpData = [];
+    // if (!locationloading && !locationerror && locationDump) {
+    //     locationDumpData =
+    //         locationDump
+    //             .map(record => record.data.location)
+    //             .filter(location => location)
+    //         ;
+    // }
 
     return <div>
         <h2>OpenKen</h2>
-Where you (primarily my family) can spy on Ken.
-
         <div className="DashboardPage">
-            <MapModule locationData={locationDumpData} />
+            {/* <MapModule locationData={locationDumpData} /> */}
 
             <ActivityStateModule dashboardData={dashboardData} />
             <HeartRateModule dashboardData={dashboardData} />
 
-            <CurrentTimeModule tLastUpdate={pollingTime} />
+            {/* <CurrentTimeModule tLastUpdate={pollingTime} /> */}
 
             <MetadataModule dashboardData={dashboardData} />
 
-            {/* <MapModule locationData={dashboardData.location || []} /> */}
+            <MapModule locationData={dashboardData.location || []} />
         </div>
     </div>;
 }

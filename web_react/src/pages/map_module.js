@@ -81,16 +81,14 @@ function MapModule({ locationData }) {
         }
     }, [JSON.stringify(viewBounds), mapRef.current]);
 
-    console.log("center", polyline[polyline.length - 1]);
     return <div>
         <MapContainer
             className="MapModule"
             whenCreated={mapInstance => {
                 mapRef.current = mapInstance;
-                console.log("set mapref!");
             }}
-            scrollWheelZoom={false}
-            style={{ height: '320px', width: "280px" }}>
+            scrollWheelZoom={true}
+            style={{ height: '320px', width: "480px" }}>
             <TileLayer
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -101,17 +99,17 @@ function MapModule({ locationData }) {
                 opacity={0.1}
             />
 
-            {/* {!isAllSame(polyline) && <Polyline
+            {!isAllSame(polyline) && mapReady && <Polyline
                 pathOptions={limeOptions}
                 positions={polyline}
-            />} */}
+            />}
             {/* {polyline.length > 0 && <Marker position={polyline[polyline.length - 1]}></Marker>} */}
-            {/* {polyline.length > 0 && mapRef.current && mapReady &&
+            {polyline.length > 0 && mapRef.current && mapReady &&
                 < Circle
                     center={polyline[polyline.length - 1]}
                     pathOptions={currentPositionStyle}
                     radius={50}
-                />} */}
+                />}
 
             {/* <Marker position={[51.505, -0.09]}>
                 <Popup>
