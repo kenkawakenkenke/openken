@@ -29,12 +29,14 @@ In order to identify the user, we made a simple custom authentication solution:
 
 Several Cloud Functions, triggering on new writes of raw data (e.g rawFitbitData), aggregates the last 30 minutes of data for a user and writes it in the Firestore collection realtimeDashboard. This is the data backing the realtime dashboard.
 
-Aggregated data include:
+Aggregated data includes:
 
 - Realtime heart rate
 - Activity state (asleep, walking, running, etc).
-- (to be implemented) Current location
+- Past 10 minutes of location
 - (to be implemented) Activity level plots for the past 30 minutes.
+
+To retain some control over privacy, the aggregator performs some crude fuzzing of location data; users can register "sensitive" locations in the userInfo table, which, if a location data falls inside of, gets smeared out in the aggregated data.
 
 ## Ken Peeker (web dashboard)
 
