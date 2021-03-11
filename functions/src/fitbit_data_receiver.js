@@ -1,5 +1,6 @@
 const firebase = require('firebase-admin');
 const firestore = firebase.firestore();
+const moment = require("moment-timezone");
 
 exports.onSubmitFitbitData = async (req, res) => {
     const respond = (response) =>
@@ -15,6 +16,7 @@ exports.onSubmitFitbitData = async (req, res) => {
     if (!payload.timestamp) {
         return respond({ status: "err", reason: "invalid data" });
     }
+    payload.timestamp = moment(payload.timestamp).tz("Asia/Tokyo");
 
     // Verify that there's a user for the token.
     const accessTokenRecord = await firestore.collection("accessTokens").doc(accessToken).get();
@@ -26,7 +28,7 @@ exports.onSubmitFitbitData = async (req, res) => {
     // Now store the payload.
     const doc = firestore
         .collection("rawFitbitData")
-        .doc(`${uid}_${payload.timestamp}`);
+        .doc(`${uid}_${payload.timestamp.unix()}`);
     await doc.set({
         uid,
         data: payload,

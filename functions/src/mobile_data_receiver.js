@@ -1,5 +1,6 @@
 const firebase = require('firebase-admin');
 const firestore = firebase.firestore();
+const moment = require("moment-timezone");
 
 exports.onSubmitMobileData =
     async (data, context) => {
@@ -10,12 +11,12 @@ exports.onSubmitMobileData =
             }
         }
         const uid = context.auth.uid;
+        data.timestamp = moment(data.timestamp).tz("Asia/Tokyo");
 
-        console.log("received", uid, data);
         // Just save it in firestore
         const doc = firestore
             .collection("rawMobileData")
-            .doc(`${uid}_${data.timestamp}`);
+            .doc(`${uid}_${data.timestamp.unix()}`);
         await doc.set({
             uid,
             data,

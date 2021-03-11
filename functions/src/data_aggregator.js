@@ -15,10 +15,7 @@ async function fetchFitbitData(uid, fromUnixTime) {
         const fitbitRecord = ref.data();
         const data = fitbitRecord.data;
         // Make it a little easier to use.
-        historicalData.push({
-            ...data,
-            t: moment(data.timestamp).tz("Asia/Tokyo"),
-        });
+        historicalData.push(data);
     });
     return historicalData;
 }
@@ -36,10 +33,7 @@ async function fetchMobileData(uid, fromUnixTime) {
         const mobileRecord = ref.data();
         const data = mobileRecord.data;
         // Make it a little easier to use.
-        historicalData.push({
-            ...data,
-            t: moment(data.timestamp).tz("Asia/Tokyo"),
-        });
+        historicalData.push(data);
     });
     return historicalData;
 }
@@ -61,17 +55,17 @@ function activityState(maybeLatestFitbitData, maybeLatestMobileData) {
 function lastUpdateTime(maybeLatestFitbitData, maybeLatestMobileData) {
     let time = {};
     if (maybeLatestFitbitData) {
-        time.fitbit = maybeLatestFitbitData.t;
+        time.fitbit = maybeLatestFitbitData.timestamp;
     }
     if (maybeLatestMobileData) {
-        time.mobile = maybeLatestMobileData.t;
+        time.mobile = maybeLatestMobileData.timestamp;
     }
     return time;
 }
 function getLocation(mobileData) {
     // TODO: fuzz out for sensitive locations.
     return mobileData.map(mobileRecord => ({
-        t: mobileRecord.t,
+        t: mobileRecord.timestamp,
         latitude: mobileRecord.location.latitude,
         longitude: mobileRecord.location.longitude,
     }));

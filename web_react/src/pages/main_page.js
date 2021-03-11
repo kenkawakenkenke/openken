@@ -91,10 +91,11 @@ function MainPage({ uid }) {
         { idField: "docKey" }
     );
 
-    // const [locationDump, locationloading, locationerror] = useCollectionDataOnce(
-    //     firebase.firestore().collection("rawMobileData"),
-    //     { idField: "docKey" }
-    // );
+    const [locationDump, locationloading, locationerror] = useCollectionDataOnce(
+        firebase.firestore().collection("rawMobileData")
+            .orderBy("data.timestamp", "asc"),
+        { idField: "docKey" }
+    );
 
     const pollingTime = usePollingUpdate();
 
@@ -105,21 +106,21 @@ function MainPage({ uid }) {
         return <div>Loading...</div>;
     }
 
-    // let locationDumpData = [];
-    // if (!locationloading && !locationerror && locationDump) {
-    //     locationDumpData =
-    //         locationDump
-    //             .map(record => record.data.location)
-    //             .filter(location => location)
-    //         ;
-    // }
+    let locationDumpData = [];
+    if (!locationloading && !locationerror && locationDump) {
+        locationDumpData =
+            locationDump
+                .map(record => record.data.location)
+                .filter(location => location)
+            ;
+    }
 
     return <div>
         <h2>OpenKen</h2>
 Where you (primarily my family) can spy on Ken.
 
         <div className="DashboardPage">
-            {/* <MapModule locationData={locationDumpData} /> */}
+            <MapModule locationData={locationDumpData} />
 
             <ActivityStateModule dashboardData={dashboardData} />
             <HeartRateModule dashboardData={dashboardData} />
@@ -128,7 +129,7 @@ Where you (primarily my family) can spy on Ken.
 
             <MetadataModule dashboardData={dashboardData} />
 
-            <MapModule locationData={dashboardData.location || []} />
+            {/* <MapModule locationData={dashboardData.location || []} /> */}
         </div>
     </div>;
 }

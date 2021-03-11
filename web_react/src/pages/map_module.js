@@ -47,6 +47,7 @@ function isAllSame(polyline) {
 }
 function MapModule({ locationData }) {
     const mapRef = useRef();
+    // console.log(locationData);
 
     let polyline =
         locationData.map(location => ([location.latitude, location.longitude]));
@@ -100,17 +101,17 @@ function MapModule({ locationData }) {
                 opacity={0.1}
             />
 
-            {!isAllSame(polyline) && <Polyline
+            {/* {!isAllSame(polyline) && <Polyline
                 pathOptions={limeOptions}
                 positions={polyline}
-            />}
+            />} */}
             {/* {polyline.length > 0 && <Marker position={polyline[polyline.length - 1]}></Marker>} */}
-            {polyline.length > 0 && mapRef.current && mapReady &&
+            {/* {polyline.length > 0 && mapRef.current && mapReady &&
                 < Circle
                     center={polyline[polyline.length - 1]}
                     pathOptions={currentPositionStyle}
                     radius={50}
-                />}
+                />} */}
 
             {/* <Marker position={[51.505, -0.09]}>
                 <Popup>

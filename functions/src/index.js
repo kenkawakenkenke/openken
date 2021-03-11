@@ -45,7 +45,7 @@ exports.onNewFitbitData
 
 // Handler for changes to mobile data, to create a new presentation data
 // by packaging various raw data sources.
-exports.onNewFitbitData
+exports.onNewMobileData
     = functions
         .region('asia-northeast1')
         .firestore
