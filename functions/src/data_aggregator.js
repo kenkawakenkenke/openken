@@ -64,11 +64,13 @@ function lastUpdateTime(maybeLatestFitbitData, maybeLatestMobileData) {
 }
 function getLocation(mobileData) {
     // TODO: fuzz out for sensitive locations.
-    return mobileData.map(mobileRecord => ({
-        t: mobileRecord.timestamp,
-        latitude: mobileRecord.location.latitude,
-        longitude: mobileRecord.location.longitude,
-    }));
+    return mobileData
+        .filter(mobileRecord => mobileRecord.location)
+        .map(mobileRecord => ({
+            t: mobileRecord.timestamp,
+            latitude: mobileRecord.location.latitude,
+            longitude: mobileRecord.location.longitude,
+        }));
 }
 function aggregate(fitbitData, mobileData) {
     const latestFitbitData = fitbitData.length > 0 && fitbitData[fitbitData.length - 1];
