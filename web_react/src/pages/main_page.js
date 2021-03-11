@@ -1,10 +1,11 @@
 import firebase from "firebase";
-import { useDocumentData } from "react-firebase-hooks/firestore";
+import { useDocumentData, useCollectionDataOnce } from "react-firebase-hooks/firestore";
 import moment from "moment-timezone";
 import "./main_page.css";
 import { useEffect, useState } from "react";
 
 import Heart from "../components/heart.js";
+import MapModule from "./map_module.js";
 
 function ActivityStateModule({ dashboardData }) {
     const heartRate = dashboardData.heartRate;
@@ -90,6 +91,11 @@ function MainPage({ uid }) {
         { idField: "docKey" }
     );
 
+    // const [locationDump, locationloading, locationerror] = useCollectionDataOnce(
+    //     firebase.firestore().collection("rawMobileData"),
+    //     { idField: "docKey" }
+    // );
+
     const pollingTime = usePollingUpdate();
 
     if (error) {
@@ -99,17 +105,30 @@ function MainPage({ uid }) {
         return <div>Loading...</div>;
     }
 
+    // let locationDumpData = [];
+    // if (!locationloading && !locationerror && locationDump) {
+    //     locationDumpData =
+    //         locationDump
+    //             .map(record => record.data.location)
+    //             .filter(location => location)
+    //         ;
+    // }
+
     return <div>
         <h2>OpenKen</h2>
 Where you (primarily my family) can spy on Ken.
 
         <div className="DashboardPage">
+            {/* <MapModule locationData={locationDumpData} /> */}
+
             <ActivityStateModule dashboardData={dashboardData} />
             <HeartRateModule dashboardData={dashboardData} />
 
             <CurrentTimeModule tLastUpdate={pollingTime} />
 
             <MetadataModule dashboardData={dashboardData} />
+
+            <MapModule locationData={dashboardData.location || []} />
         </div>
     </div>;
 }
