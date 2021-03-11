@@ -96,6 +96,7 @@ public class DataLoggerService extends Service {
             locationData.put("altitude", latestLocation.getAltitude());
             locationData.put("speed", latestLocation.getSpeed());
             locationData.put("bearing", latestLocation.getBearing());
+            locationData.put("provider", latestLocation.getProvider());
             data.put("location", locationData);
         }
         functions

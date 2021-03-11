@@ -12,6 +12,9 @@ import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 
+import java.time.Duration;
+import java.time.Instant;
+
 import static android.content.Context.LOCATION_SERVICE;
 
 public class LocationReceiver implements LocationListener {
@@ -38,7 +41,10 @@ public class LocationReceiver implements LocationListener {
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationManager.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER,
-//                    LocationManager.GPS_PROVIDER,
+                    MIN_TIME_MS,
+                    MIN_DISTANCE_M, this);
+            locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
                     MIN_TIME_MS,
                     MIN_DISTANCE_M, this);
         }
@@ -48,8 +54,24 @@ public class LocationReceiver implements LocationListener {
         locationManager.removeUpdates(this);
     }
 
+    private Instant prevGPSFetch = null;
+
     @Override
     public void onLocationChanged(Location location) {
+        Instant now = Instant.now();
+        if (location.getProvider().equals("network")) {
+            long timeSinceLastGpsFetch =
+                    prevGPSFetch == null ? Long.MAX_VALUE :
+                            Duration.between(prevGPSFetch, now).getSeconds();
+            // If we fetched (more precise) GPS recently, let's not send (inaccurate) network location.
+            if (timeSinceLastGpsFetch <= 2 * 60) {
+                Log.w("zzz", "ignoring network location as last GPS fetch was " + timeSinceLastGpsFetch + " seconds ago");
+                return;
+            }
+        } else {
+            prevGPSFetch = now;
+        }
+        Log.w("zzz", "location: " + location.getProvider() + " " + location);
         this.callback.onReceivedLocation(location);
     }
 
