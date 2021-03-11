@@ -68,9 +68,10 @@ public class DataLoggerService extends Service {
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationChannel channel = new NotificationChannel(
-                channelId, title, NotificationManager.IMPORTANCE_DEFAULT);
+                channelId, title, NotificationManager.IMPORTANCE_MIN);
         channel.setDescription("Silent Notification");
         channel.setSound(null, null);
+        channel.setLockscreenVisibility(Notification.VISIBILITY_SECRET);
         channel.enableLights(false);
         channel.setLightColor(Color.BLUE);
         channel.enableVibration(false);
