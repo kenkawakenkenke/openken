@@ -1,6 +1,7 @@
 const firebase = require('firebase-admin');
 const firestore = firebase.firestore();
 const moment = require("moment-timezone");
+const geolib = require('geolib');
 
 async function fetchFitbitData(uid, fromTime) {
     // Fetch fitbit data from past 30 minutes.
@@ -38,6 +39,16 @@ async function fetchMobileData(uid, fromTime) {
     return historicalData;
 }
 
+async function fetchUserInfo(uid) {
+    const userInfo = await firestore
+        .collection("users").doc(uid).get();
+    return userInfo.data() ||
+    // Return empty user info as fallback.
+    {
+        sensitiveLocation: [],
+    };
+}
+
 function activityState(maybeLatestFitbitData, maybeLatestMobileData) {
     // Asleep always wins.
     if (maybeLatestFitbitData && maybeLatestFitbitData.sleep === "asleep") {
@@ -62,17 +73,37 @@ function lastUpdateTime(maybeLatestFitbitData, maybeLatestMobileData) {
     }
     return time;
 }
-function getLocation(mobileData) {
-    // TODO: fuzz out for sensitive locations.
+
+function inSensitiveLocation(sensitiveLocations, location) {
+    return sensitiveLocations
+        .find(sensitiveLocation => {
+            const distM = geolib.getDistance(sensitiveLocation, location);
+            return distM < sensitiveLocation.radius;
+        });
+}
+function getLocation(userInfo, mobileData) {
     return mobileData
         .filter(mobileRecord => mobileRecord.location)
-        .map(mobileRecord => ({
-            t: mobileRecord.timestamp,
-            latitude: mobileRecord.location.latitude,
-            longitude: mobileRecord.location.longitude,
-        }));
+        .map(mobileRecord => {
+            const matchingSensitiveLocation =
+                inSensitiveLocation(userInfo.sensitiveLocation, mobileRecord.location);
+            if (matchingSensitiveLocation) {
+                return {
+                    t: mobileRecord.timestamp,
+                    semantic: matchingSensitiveLocation.label,
+                    latitude: matchingSensitiveLocation.latitude,
+                    longitude: matchingSensitiveLocation.longitude,
+                    radius: matchingSensitiveLocation.radius,
+                };
+            }
+            return {
+                t: mobileRecord.timestamp,
+                latitude: mobileRecord.location.latitude,
+                longitude: mobileRecord.location.longitude,
+            };
+        });
 }
-function aggregate(fitbitData, mobileData) {
+function aggregate(userInfo, fitbitData, mobileData) {
     const latestFitbitData = fitbitData.length > 0 && fitbitData[fitbitData.length - 1];
     const latestMobileData = mobileData.length > 0 && mobileData[mobileData.length - 1];
 
@@ -90,7 +121,7 @@ function aggregate(fitbitData, mobileData) {
     aggregateData.activityState = activityState(latestFitbitData, latestMobileData);
 
     // Location data
-    aggregateData.location = getLocation(mobileData);
+    aggregateData.location = getLocation(userInfo, mobileData);
 
     // Last update times
     aggregateData.tLastUpdate = lastUpdateTime(latestFitbitData, latestMobileData);
@@ -103,12 +134,13 @@ exports.createPresentationData = async (uid) => {
 
     const fitbitData = await fetchFitbitData(uid, historicalTimeCutoff);
     const mobileData = await fetchMobileData(uid, historicalTimeCutoff);
+    const userInfo = await fetchUserInfo(uid);
     // Do the same for android data.
 
     // Roll them up,
-    const aggregatedData = aggregate(fitbitData, mobileData);
+    const aggregatedData = aggregate(userInfo, fitbitData, mobileData);
 
-    console.log(aggregatedData);
+    // console.log(aggregatedData);
     // Save.
     await firestore
         .collection("realtimeDashboard")

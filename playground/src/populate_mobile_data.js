@@ -7,19 +7,25 @@ const firebaseConfig = {
 };
 admin.initializeApp(firebaseConfig);
 
-const [lat, lng] = [35.6995549, 139.4707288];
-const data = {
-    data: {
-        timestamp: new Date(),
-        location: {
-            latitude: lat,
-            longitude: lng,
+function generateData() {
+    // Just random location in Kokubunji.
+    const [lat, lng] = [
+        35.6995549 + Math.random() * 0.005,
+        139.4707288 + Math.random() * 0.005];
+    const data = {
+        data: {
+            timestamp: new Date(),
+            location: {
+                latitude: lat,
+                longitude: lng,
+            },
+            activity: Math.random() < 0.5 ? "walking" : "still",
         },
-        activity: Math.random() < 0.5 ? "walking" : "still",
-    },
-    // This is just a locally generated (emulated) uid, so we're not leaking anything.
-    uid: "9CzOXQHx1FJlpdmcuCQaxMKTdn7c"
-};
+        // This is just a locally generated (emulated) uid, so we're not leaking anything.
+        uid: "9CzOXQHx1FJlpdmcuCQaxMKTdn7c"
+    };
+    return data;
+}
 
 function isUsingEmulator() {
     return process.env.FIRESTORE_EMULATOR_HOST
@@ -33,8 +39,11 @@ function isUsingEmulator() {
         return;
     }
 
-    await admin.firestore().collection("rawMobileData")
-        .add(data);
+    for (let i = 0; i < 10; i++) {
+        const data = generateData();
+        await admin.firestore().collection("rawMobileData")
+            .add(data);
+    }
 
     console.log("done");
 })();
