@@ -2,12 +2,12 @@ const firebase = require('firebase-admin');
 const firestore = firebase.firestore();
 const moment = require("moment-timezone");
 
-async function fetchFitbitData(uid, fromUnixTime) {
+async function fetchFitbitData(uid, fromTime) {
     // Fetch fitbit data from past 30 minutes.
     const historicalDataRef = await firestore
         .collection("rawFitbitData")
         .where("uid", "==", uid)
-        .where("data.timestamp", ">=", fromUnixTime * 1000)
+        .where("data.timestamp", ">=", fromTime)
         .orderBy("data.timestamp", "asc")
         .get();
     let historicalData = [];
@@ -20,12 +20,12 @@ async function fetchFitbitData(uid, fromUnixTime) {
     return historicalData;
 }
 
-async function fetchMobileData(uid, fromUnixTime) {
+async function fetchMobileData(uid, fromTime) {
     // Fetch fitbit data from past 30 minutes.
     const historicalDataRef = await firestore
         .collection("rawMobileData")
         .where("uid", "==", uid)
-        .where("data.timestamp", ">=", fromUnixTime * 1000)
+        .where("data.timestamp", ">=", fromTime)
         .orderBy("data.timestamp", "asc")
         .get();
     let historicalData = [];
@@ -99,8 +99,8 @@ function aggregate(fitbitData, mobileData) {
 exports.createPresentationData = async (uid) => {
     const historicalTimeCutoff = moment().add(-10, "minutes");
 
-    const fitbitData = await fetchFitbitData(uid, historicalTimeCutoff.unix());
-    const mobileData = await fetchMobileData(uid, historicalTimeCutoff.unix());
+    const fitbitData = await fetchFitbitData(uid, historicalTimeCutoff);
+    const mobileData = await fetchMobileData(uid, historicalTimeCutoff);
     // Do the same for android data.
 
     // Roll them up,
