@@ -103,6 +103,14 @@ function getLocation(userInfo, mobileData) {
             };
         });
 }
+function getAccelerometer(fitbitData) {
+    return fitbitData
+        .filter(fitbitRecord => fitbitRecord.zeroCross >= 0)
+        .map(fitbitRecord => ({
+            t: fitbitRecord.timestamp,
+            v: fitbitRecord.zeroCross,
+        }));
+}
 function aggregate(userInfo, fitbitData, mobileData) {
     const latestFitbitData = fitbitData.length > 0 && fitbitData[fitbitData.length - 1];
     const latestMobileData = mobileData.length > 0 && mobileData[mobileData.length - 1];
@@ -122,6 +130,9 @@ function aggregate(userInfo, fitbitData, mobileData) {
 
     // Location data
     aggregateData.location = getLocation(userInfo, mobileData);
+
+    // Accelerometer data
+    aggregateData.accel = getAccelerometer(fitbitData);
 
     // Last update times
     aggregateData.tLastUpdate = lastUpdateTime(latestFitbitData, latestMobileData);
