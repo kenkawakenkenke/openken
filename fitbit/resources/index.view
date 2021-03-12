@@ -43,8 +43,7 @@
   <text id="labelConnectionLost" 
   class="standardText"
    x="40" y="75%"
-   visibility="hidden"
-   >Connection lost!!</text>
+   ></text>
 
   <text id="labelStatus" 
   class="standardText"

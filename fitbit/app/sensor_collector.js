@@ -4,9 +4,7 @@ import { BodyPresenceSensor } from "body-presence";
 import sleep from "sleep"
 import { battery } from "power";
 import { Accelerometer } from "accelerometer";
-import { computeZeroCross } from "./sensor_util.js";
-{
-}
+import { computeZeroCross, DataBuffer, addPowerReadings } from "./sensor_util.js";
 
 class SensorDataCollector {
     constructor(sendEverySec, callback) {
@@ -32,19 +30,12 @@ class SensorDataCollector {
 
         // Accelerometer readings
         const frequency = 30;
-        const batch = 30 * frequency;
+        const batch = 1 * frequency;
         const accel = new Accelerometer({ frequency, batch });
         this.accel = accel;
-        this.accelerometerDataBuffer = [];
+        this.accelerometerDataBuffer = new DataBuffer(frequency * 30 * 2);
         accel.addEventListener("reading", () => {
-            const timeFetched = new Date();
-            const zeroCross = computeZeroCross(accel.readings);
-            parentThis.accelerometerDataBuffer.push(
-                {
-                    t: timeFetched.getTime(),
-                    zeroCross,
-                });
-            // console.log(`${localeTimeString(timeFetched)}, ${zeroCross}`);
+            addPowerReadings(accel.readings, parentThis.accelerometerDataBuffer);
         });
     }
 
@@ -63,7 +54,11 @@ class SensorDataCollector {
         this.latestData = undefined;
 
         const now = new Date().getTime();
-        const readyToSend = !this.lastSend || (now - this.lastSend > this.sendEveryMs);
+        if (!this.lastSend) {
+            this.lastSend = now;
+        }
+        // const readyToSend = !this.lastSend || (now - this.lastSend > this.sendEveryMs);
+        const readyToSend = (now - this.lastSend > this.sendEveryMs);
         if (!readyToSend) {
             // console.log("abort: not enough time: " + tSinceLastSend);
             return;
@@ -71,9 +66,12 @@ class SensorDataCollector {
         this.lastSend = now;
 
         // Add buffered accelerometer data
-        this.accelerometerDataBuffer.forEach(acc => console.log("zeroX:" + acc.zeroCross));
-        dataToSend.accel = this.accelerometerDataBuffer;
-        this.accelerometerDataBuffer = [];
+        dataToSend.zeroCross = computeZeroCross(this.accelerometerDataBuffer);
+        console.log(`accel:${this.accelerometerDataBuffer.length()} ${dataToSend.zeroCross}`);
+        this.accelerometerDataBuffer.clear();
+        // this.accelerometerDataBuffer.forEach(acc => console.log("zeroX:" + acc.zeroCross));
+        // dataToSend.accel = this.accelerometerDataBuffer;
+        // this.accelerometerDataBuffer = [];
 
         this.callback(dataToSend);
     }

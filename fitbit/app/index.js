@@ -64,7 +64,7 @@ function submitReading(data) {
     if (waitingResponse) {
         console.log("==== Still waiting response, connection may be lost.");
         vibration.start("nudge-max");
-        labelConnectionLost.visibility = "visible";
+        labelConnectionLost.text = "Connection lost!!";
     }
 
     console.log(`Send: ${JSON.stringify(data)} `);
