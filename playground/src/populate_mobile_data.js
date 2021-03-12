@@ -10,8 +10,8 @@ admin.initializeApp(firebaseConfig);
 function generateData() {
     // Just random location in Kokubunji.
     const [lat, lng] = [
-        35.6995549 + Math.random() * 0.005,
-        139.4707288 + Math.random() * 0.005];
+        35.6995549 + (Math.random() - 0.5) * 0.003,
+        139.4707288 + (Math.random() - 0.5) * 0.003];
     const data = {
         data: {
             timestamp: new Date(),
@@ -39,7 +39,7 @@ function isUsingEmulator() {
         return;
     }
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 1; i++) {
         const data = generateData();
         await admin.firestore().collection("rawMobileData")
             .add(data);

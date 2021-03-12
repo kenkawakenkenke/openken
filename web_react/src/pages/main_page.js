@@ -131,6 +131,9 @@ function MainPage({ uid }) {
     //             .filter(location => location)
     //         ;
     // }
+    if (!dashboardData) {
+        return <div>No data</div>
+    }
 
     return <div>
         <h2>OpenKen</h2>
