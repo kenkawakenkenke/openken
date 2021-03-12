@@ -103,6 +103,14 @@ function getLocation(userInfo, mobileData) {
             };
         });
 }
+function getHeartRate(fitbitData) {
+    return fitbitData
+        .filter(fitbitRecord => fitbitRecord.heartRate >= 0)
+        .map(fitbitRecord => ({
+            t: fitbitRecord.timestamp,
+            v: fitbitRecord.heartRate,
+        }));
+}
 function getAccelerometer(fitbitData) {
     return fitbitData
         .filter(fitbitRecord => fitbitRecord.zeroCross >= 0)
@@ -117,9 +125,7 @@ function aggregate(userInfo, fitbitData, mobileData) {
 
     let aggregateData = {};
     // Realtime heart rate
-    if (latestFitbitData && latestFitbitData.heartRate) {
-        aggregateData.heartRate = latestFitbitData.heartRate;
-    }
+    aggregateData.heartRate = getHeartRate(fitbitData);
 
     if (latestFitbitData && latestFitbitData.chargeLevel) {
         aggregateData.fitbitChargeLevel = latestFitbitData.chargeLevel;

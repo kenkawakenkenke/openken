@@ -48,9 +48,22 @@ function HeartRateModule({ dashboardData }) {
     if (!dashboardData.tLastUpdate.fitbit) {
         return <div></div>;
     }
-    let heartRate = dashboardData.heartRate;
+    const heartRates = dashboardData.heartRate.map(
+        heartRate => ({
+            t: heartRate.t.toDate().getTime(),
+            v: heartRate.v,
+        })
+    );
+    let heartRate = heartRates[heartRates.length - 1].v;
     let heartRateText = heartRate;
     let warningText = "";
+
+    let min = heartRates.length > 0 ? heartRates[0].v : 0;
+    let max = min;
+    heartRates.map(r => r.v).forEach(v => {
+        min = Math.min(min, v);
+        max = Math.max(max, v);
+    });
 
     const fitbitUpdateTime = moment(dashboardData.tLastUpdate.fitbit.toDate()).tz("Asia/Tokyo");
     const now = moment();
@@ -72,6 +85,27 @@ function HeartRateModule({ dashboardData }) {
                 </div>
             </div>
             <div className="HeartRateWarning">{warningText}</div>
+
+            <LineChart
+                width={300}
+                height={100}
+                data={heartRates}
+                margin={{
+                    top: 0,
+                    right: 0,
+                    left: 0,
+                    bottom: 0,
+                }}
+            >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="t"
+                    tickFormatter={(v) => moment(v).format("HH:mm")}
+                />
+                <YAxis domain={[min, max]} />
+                <Tooltip />
+                <Line dataKey="v" fill="#8884d8" />
+            </LineChart>
+
             <div>最終データ更新：{formatTimeFromNow(fitbitUpdateTime)}</div>
         </div>
     </div>;
