@@ -5,6 +5,7 @@ import { ToastContextProvider } from "./common/toast.js";
 
 import AccessTokenPage from "./pages/access_token_page.js";
 import MainPage from "./pages/main_page.js";
+import UserInfoPage from "./pages/user_info_page.js";
 
 // This is Ken's uid. This is special because it's the default user
 // that shows when opening the home page.
@@ -23,6 +24,7 @@ function App() {
           <Router>
             <Route exact path="/" component={MainPageRouter} />
             <Route exact path="/user/:uid" component={MainPageRouter} />
+            <Route exact path="/settings" component={UserInfoPage} />
             <Route exact path="/access_token" component={AccessTokenPage} />
           </Router>
         </ToastContextProvider>

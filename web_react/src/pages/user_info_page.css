@@ -1,0 +1,16 @@
+.SensitiveLocationsForm {
+  /* margin-top: 8px; */
+}
+
+.SensitiveLocationRow {
+  margin-top: 8px;
+  display: flex;
+  justify-items: center;
+}
+.SensitiveLocationRowSelected {
+  background-color: #dddddd;
+}
+
+.SensitiveLocationField {
+  margin: 4px;
+}
