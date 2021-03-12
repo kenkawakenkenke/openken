@@ -10,8 +10,8 @@ admin.initializeApp(firebaseConfig);
 function generateData() {
     // Just random location in Kokubunji.
     const [lat, lng] = [
-        35.6995549 + (Math.random() - 0.5) * 0.003,
-        139.4707288 + (Math.random() - 0.5) * 0.003];
+        35.6995549 + (Math.random() - 0.5) * 0.005,
+        139.4707288 + (Math.random() - 0.5) * 0.005];
     const data = {
         data: {
             timestamp: new Date(),

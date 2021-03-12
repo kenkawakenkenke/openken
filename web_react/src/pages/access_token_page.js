@@ -8,9 +8,7 @@ import Loader from 'react-loader-spinner';
 
 import {
     Button,
-    TextField,
     InputAdornment,
-    Tooltip,
     IconButton,
     FilledInput
 } from "@material-ui/core";
@@ -25,11 +23,6 @@ function doSignIn() {
 
 function doSignOut() {
     firebase.auth().signOut();
-}
-
-function fetchToken(uid) {
-    firebase.firestore().collection("accessTokens").where("uid", "==", uid)
-        .limit(1);
 }
 
 function AccessTokenPane() {

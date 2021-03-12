@@ -1,5 +1,5 @@
-import { MapContainer, TileLayer, Marker, Popup, Polyline, Rectangle, Circle } from 'react-leaflet'
-import { useEffect, useRef, useState } from "react";
+import { MapContainer, TileLayer, Polyline, Rectangle, Circle } from 'react-leaflet'
+import { useEffect, useState } from "react";
 
 function computeViewBounds(polyline, latestLocation) {
     if (!latestLocation) {
@@ -50,7 +50,7 @@ function coordToMapCoord(coord) {
     return [coord.latitude, coord.longitude];
 }
 function MapModule({ locationData }) {
-    const mapRef = useRef();
+    const [mapRef, setMapRef] = useState();
 
     let polyline = locationData
         .filter(location => !location.semantic)
@@ -77,14 +77,19 @@ function MapModule({ locationData }) {
     const [mapReady, setMapReady] = useState(false);
 
     const latestLocation = locationData.length > 0 && locationData[locationData.length - 1];
-    const viewBounds = computeViewBounds(polyline, latestLocation);
+    const [[viewBoundTop, viewBoundLeft],
+        [viewBoundBottom, viewBoundRight]]
+        = computeViewBounds(polyline, latestLocation);
     useEffect(() => {
-        if (mapRef.current) {
-            console.log("updated:", viewBounds[0], viewBounds[1]);
-            mapRef.current.fitBounds(viewBounds);
-            setMapReady(true);
+        if (!mapRef) {
+            return;
         }
-    }, [JSON.stringify(viewBounds), mapRef.current]);
+        mapRef.fitBounds(
+            [[viewBoundTop, viewBoundLeft],
+            [viewBoundBottom, viewBoundRight]]
+        );
+        setMapReady(true);
+    }, [viewBoundTop, viewBoundLeft, viewBoundBottom, viewBoundRight, mapRef]);
 
     if (locationData.length === 0) {
         return <div>No location data</div>;
@@ -93,7 +98,7 @@ function MapModule({ locationData }) {
         <MapContainer
             className="MapModule"
             whenCreated={mapInstance => {
-                mapRef.current = mapInstance;
+                setMapRef(mapInstance);
             }}
             scrollWheelZoom={true}
             style={{ height: '320px', width: "480px" }}>

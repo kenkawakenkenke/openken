@@ -1,5 +1,8 @@
-import firebase from "firebase";
-import { useDocumentData, useCollectionDataOnce } from "react-firebase-hooks/firestore";
+import firebase from "firebase/app";
+import {
+    useDocumentData
+    // , useCollectionDataOnce
+} from "react-firebase-hooks/firestore";
 import moment from "moment-timezone";
 import "./main_page.css";
 import { useEffect, useState } from "react";
@@ -61,13 +64,13 @@ function HeartRateModule({ dashboardData }) {
     </div>;
 }
 
-function CurrentTimeModule({ tLastUpdate }) {
-    return <div className="DataModule">
-        <div className="CurrentTimeText">
-            {tLastUpdate.format("HH:mm:ss")}
-        </div>
-    </div>
-}
+// function CurrentTimeModule({ tLastUpdate }) {
+//     return <div className="DataModule">
+//         <div className="CurrentTimeText">
+//             {tLastUpdate.format("HH:mm:ss")}
+//         </div>
+//     </div>
+// }
 
 function formatTimeFromNow(t) {
     if (!t) {
@@ -86,7 +89,7 @@ function usePollingUpdate(updateEveryMs) {
             setTPoll(moment().tz("Asia/Tokyo"));
         }, 1000);
         return () => {
-            clearInterval(updateEveryMs);
+            clearInterval(timer);
         }
     }, []);
     return tPoll;
@@ -114,7 +117,7 @@ function MainPage({ uid }) {
     //     { idField: "docKey" }
     // );
 
-    const pollingTime = usePollingUpdate();
+    usePollingUpdate();
 
     if (error) {
         return <div>Error on loading data!</div>;
