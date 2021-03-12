@@ -3,6 +3,10 @@ import { HeartRateSensor } from "heart-rate";
 import { BodyPresenceSensor } from "body-presence";
 import sleep from "sleep"
 import { battery } from "power";
+import { Accelerometer } from "accelerometer";
+import { computeZeroCross } from "./sensor_util.js";
+{
+}
 
 class SensorDataCollector {
     constructor(sendEverySec, callback) {
@@ -24,11 +28,30 @@ class SensorDataCollector {
             };
             parentThis.poll();
         });
+
+
+        // Accelerometer readings
+        const frequency = 30;
+        const batch = 30 * frequency;
+        const accel = new Accelerometer({ frequency, batch });
+        this.accel = accel;
+        this.accelerometerDataBuffer = [];
+        accel.addEventListener("reading", () => {
+            const timeFetched = new Date();
+            const zeroCross = computeZeroCross(accel.readings);
+            parentThis.accelerometerDataBuffer.push(
+                {
+                    t: timeFetched.getTime(),
+                    zeroCross,
+                });
+            // console.log(`${localeTimeString(timeFetched)}, ${zeroCross}`);
+        });
     }
 
     start() {
         this.body.start();
         this.hrm.start();
+        this.accel.start();
     }
 
     poll() {
@@ -46,6 +69,11 @@ class SensorDataCollector {
             return;
         }
         this.lastSend = now;
+
+        // Add buffered accelerometer data
+        this.accelerometerDataBuffer.forEach(acc => console.log("zeroX:" + acc.zeroCross));
+        dataToSend.accel = this.accelerometerDataBuffer;
+        this.accelerometerDataBuffer = [];
 
         this.callback(dataToSend);
     }

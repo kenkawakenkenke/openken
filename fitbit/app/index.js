@@ -14,6 +14,7 @@ import SensorDataCollector from "./sensor_collector.js";
 let labelHeartRate = document.getElementById("labelHeartRate");
 let labelChargeLevel = document.getElementById("labelChargeLevel");
 let labelWalkCount = document.getElementById("labelWalkCount");
+let labelConnectionLost = document.getElementById("labelConnectionLost");
 
 let labelStatus = document.getElementById("labelStatus");
 function showStatusText(text) {
@@ -29,7 +30,14 @@ function localeTimeString(t) {
     }
     return `${formatPiece(t.getHours())}:${formatPiece(t.getMinutes())}:${formatPiece(t.getSeconds())}`
 }
+let waitingResponse = false;
 function submitReading(data) {
+    if (waitingResponse) {
+        console.log("==== Still waiting response, connection may be lost.");
+        vibration.start("nudge-max");
+        labelConnectionLost.visibility = "visible";
+    }
+
     console.log(`Send: ${JSON.stringify(data)} `);
     showStatusText("Sending...");
 
@@ -42,17 +50,27 @@ function submitReading(data) {
 
     const baseURL = "https://asia-northeast1-open-ken.cloudfunctions.net/submitFitbitData";
     const serializedData = encodeURIComponent(JSON.stringify(data));
-    const requestURL = `${baseURL}?data = ${serializedData} `;
-    // requester.request(requestURL,
-    //     response => {
-    // showStatusText("Sent");
-    //         console.log("got response: " + response);
-    //     },
-    //     err => {
-    //         vibration.start("alert");
-    // showStatusText("Failed send");
-    //         showMessage("Failed send: " + new Date());
-    //     });
+    const requestURL = `${baseURL}?data=${serializedData}`;
+    waitingResponse = true;
+    requester.request(requestURL,
+        response => {
+            waitingResponse = false;
+            const parsed = JSON.parse(response);
+            if (parsed.status === "err") {
+                showStatusText("Error");
+                vibration.start("nudge-max");
+                console.log("failed: " + parsed.reason);
+                return;
+            }
+            showStatusText("Sent!!");
+            console.log("got response: " + JSON.stringify(parsed));
+        },
+        err => {
+            waitingResponse = false;
+            vibration.start("nudge-max");
+            showStatusText("Failed send");
+            showMessage("Failed send: " + new Date());
+        });
 }
 const dataCollector = new SensorDataCollector(30, submitReading);
 
@@ -73,13 +91,13 @@ messaging.peerSocket.addEventListener("open", (evt) => {
 messaging.peerSocket.addEventListener("close", (evt) => {
     console.error(`Connection closed: ${JSON.stringify(evt)} `);
     showStatusText("Connection closed: " + JSON.stringify(evt));
-    vibration.start("alert");
+    vibration.start("nudge-max");
 });
 
 messaging.peerSocket.addEventListener("error", (err) => {
     console.error(`Connection error: ${err.code} - ${err.message} `);
     showStatusText("Connection error: " + err.message);
-    vibration.start("alert");
+    vibration.start("nudge-max");
 });
 
 // Setup clock

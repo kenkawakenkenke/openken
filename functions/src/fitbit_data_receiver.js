@@ -11,10 +11,10 @@ exports.onSubmitFitbitData = async (req, res) => {
     try {
         payload = JSON.parse(req.query.data);
     } catch (err) {
-        return respond({ status: "err", reason: "invalid data" });
+        return respond({ status: "err", reason: "invalid data:" + err });
     }
     if (!payload.timestamp) {
-        return respond({ status: "err", reason: "invalid data" });
+        return respond({ status: "err", reason: "invalid data:" + err });
     }
     payload.timestamp = moment(payload.timestamp).tz("Asia/Tokyo");
 
