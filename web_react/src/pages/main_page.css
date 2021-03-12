@@ -12,7 +12,7 @@
 
 .ActivityStateModule {
   font-size: 4em;
-  width: 200px;
+  width: 300px;
 }
 
 .HeartRateModule {
@@ -29,7 +29,7 @@
   /* align-self: center; */
 }
 .HeartRateText {
-  font-size: 12em;
+  font-size: 8em;
 }
 .HeartContainer {
   width: 100px;

@@ -10,20 +10,23 @@ import { useEffect, useState } from "react";
 import Heart from "../components/heart.js";
 import MapModule from "./map_module.js";
 
-
 function ActivityStateModule({ dashboardData }) {
     function textForActivity(activity) {
         switch (activity) {
             case "vehicle":
-                return "Ken is in a vehicle";
+                return "乗車中";
             case "bicycle":
-                return "Ken is on a bicycle";
+                return "自転車に乗ってます";
             case "still":
+                return "じっとしてます";
             case "walking":
+                return "歩いてます";
             case "running":
+                return "走ってます";
             case "asleep":
+                return "寝てます";
             case "awake":
-                return `Ken is ${activity}`;
+                return "起きてます";
             default:
                 return "Unknown";
         }
@@ -41,12 +44,14 @@ function HeartRateModule({ dashboardData }) {
     let heartRate = dashboardData.heartRate;
     let heartRateText = heartRate;
     let warningText = "";
+
+    const fitbitUpdateTime = moment(dashboardData.tLastUpdate.fitbit.toDate()).tz("Asia/Tokyo");
     const now = moment();
-    const duration = moment.duration(now.diff(moment(dashboardData.tLastUpdate.fitbit.toDate())), "milliseconds");
+    const duration = moment.duration(now.diff(fitbitUpdateTime), "milliseconds");
     if (duration.asSeconds() > 120) {
         heartRate = 0;
         heartRateText = "-";
-        warningText = "No data for 2 minutes";
+        warningText = "2分以上データがありません";
     }
 
     return <div className="DataModule HeartRateModule">
@@ -60,6 +65,7 @@ function HeartRateModule({ dashboardData }) {
                 </div>
             </div>
             <div className="HeartRateWarning">{warningText}</div>
+            <div>最終データ更新：{formatTimeFromNow(fitbitUpdateTime)}</div>
         </div>
     </div>;
 }
@@ -74,12 +80,26 @@ function HeartRateModule({ dashboardData }) {
 
 function formatTimeFromNow(t) {
     if (!t) {
-        return "No data";
+        return "データなし";
     }
     const now = moment();
-    const duration = moment.duration(now.diff(t), "milliseconds");
-    return duration.humanize() + " ago";
-    // return duration + " ago";
+    const durationMs = now.diff(t);
+    if (durationMs < 60 * 1000) {
+        return "数秒前";
+    }
+    if (durationMs < 2 * 60 * 1000) {
+        return "一分前";
+    }
+    if (durationMs < 10 * 60 * 1000) {
+        return "数分前";
+    }
+    if (durationMs < 60 * 60 * 1000) {
+        return "十数分前";
+    }
+    if (durationMs < 2 * 60 * 60 * 1000) {
+        return "一時間前";
+    }
+    return "ずっと前";
 }
 
 function usePollingUpdate(updateEveryMs) {
@@ -96,13 +116,10 @@ function usePollingUpdate(updateEveryMs) {
 }
 
 function MetadataModule({ dashboardData }) {
-    const fitbitUpdateTime = dashboardData.tLastUpdate.fitbit && moment(dashboardData.tLastUpdate.fitbit.toDate()).tz("Asia/Tokyo");
     const mobileUpdateTime = dashboardData.tLastUpdate.mobile && moment(dashboardData.tLastUpdate.mobile.toDate()).tz("Asia/Tokyo");
 
     return <div className="DataModule">
-        <p>Fitbit last update: {formatTimeFromNow(fitbitUpdateTime)}</p>
-        <p>Fitbit charge🔋: {dashboardData.fitbitChargeLevel}%</p>
-        <p>Mobile last update: {formatTimeFromNow(mobileUpdateTime)}</p>
+        <p>Fitbit🔋: {dashboardData.fitbitChargeLevel}%</p>
     </div>;
 }
 function MainPage({ uid }) {
@@ -138,6 +155,7 @@ function MainPage({ uid }) {
         return <div>No data</div>
     }
 
+    const mobileUpdateTime = dashboardData.tLastUpdate.mobile && moment(dashboardData.tLastUpdate.mobile.toDate()).tz("Asia/Tokyo");
     return <div>
         <h2>OpenKen</h2>
         <div className="DashboardPage">
@@ -148,11 +166,13 @@ function MainPage({ uid }) {
 
             {/* <CurrentTimeModule tLastUpdate={pollingTime} /> */}
 
-            <MetadataModule dashboardData={dashboardData} />
-
             <div className="DataModule">
                 <MapModule locationData={dashboardData.location || []} />
+                <div>最終データ更新：{formatTimeFromNow(mobileUpdateTime)}</div>
             </div>
+
+            <MetadataModule dashboardData={dashboardData} />
+
         </div>
     </div>;
 }
