@@ -6,6 +6,7 @@ import document from "document";
 import { vibration } from "haptics";
 import * as messaging from "messaging";
 import clock from "clock";
+import { today } from "user-activity";
 
 import CompanionUrlRequester from "./companion_requester.js";
 
@@ -17,8 +18,36 @@ let labelWalkCount = document.getElementById("labelWalkCount");
 let labelConnectionLost = document.getElementById("labelConnectionLost");
 
 let labelStatus = document.getElementById("labelStatus");
+let labelStatusSpec;
 function showStatusText(text) {
-    labelStatus.text = localeTimeString(new Date()) + ": " + text;
+    labelStatusSpec = {
+        t: new Date(),
+        text,
+    };
+    // labelStatus.text = localeTimeString(new Date()) + ": " + text;
+}
+function getFriendlyDuration(secs) {
+    return Math.floor(secs) + "s ago";
+    if (secs < 30) {
+        return "few seconds ago";
+    }
+    if (secs < 60) {
+        return "under a minute ago";
+    }
+    if (secs < 60 * 2) {
+        return "a minute ago";
+    }
+    if (secs < 60 * 10) {
+        return "minutes ago";
+    }
+    return "a while back";
+}
+function updateStatusText(now) {
+    if (!labelStatusSpec) {
+        return;
+    }
+    const elapsedSecs = (now.getTime() - labelStatusSpec.t.getTime()) / 1000;
+    labelStatus.text = `${getFriendlyDuration(elapsedSecs)}: ${labelStatusSpec.text}`;
 }
 
 // For some reason, toLoaleTimeString ignores timezones.
@@ -46,7 +75,7 @@ function submitReading(data) {
     // data.walkCount = 11234;
     labelHeartRate.text = `${data.heartRate} `;
     labelChargeLevel.text = `${Math.floor(data.chargeLevel)}%`
-    labelWalkCount.text = `${data.walkCount || "-----"} `
+    labelWalkCount.text = `${today.adjusted.steps}`
 
     const baseURL = "https://asia-northeast1-open-ken.cloudfunctions.net/submitFitbitData";
     const serializedData = encodeURIComponent(JSON.stringify(data));
@@ -104,8 +133,10 @@ messaging.peerSocket.addEventListener("error", (err) => {
 let labelClock = document.getElementById("labelClock");
 clock.granularity = "seconds"; // seconds, minutes, or hours
 clock.addEventListener("tick", (evt) => {
-    labelClock.text = monoDigits(localeTimeString(new Date()));
+    const now = new Date();
+    labelClock.text = monoDigits(localeTimeString(now));
     // labelClock.text = evt.date.toTimeString();
+    updateStatusText(now);
 });
 
 // From: https://dev.fitbit.com/build/guides/user-interface/css/
