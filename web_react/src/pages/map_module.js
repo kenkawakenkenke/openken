@@ -95,6 +95,7 @@ function MapModule({ locationData }) {
         return <div>No location data</div>;
     }
     return <div>
+        居場所によっては位置情報がぼかされています
         <MapContainer
             className="MapModule"
             whenCreated={mapInstance => {

@@ -150,7 +150,9 @@ function MainPage({ uid }) {
 
             <MetadataModule dashboardData={dashboardData} />
 
-            <MapModule locationData={dashboardData.location || []} />
+            <div className="DataModule">
+                <MapModule locationData={dashboardData.location || []} />
+            </div>
         </div>
     </div>;
 }
