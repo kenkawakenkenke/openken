@@ -34,7 +34,7 @@ Aggregated data includes:
 - Realtime heart rate
 - Activity state (asleep, walking, running, etc).
 - Past 10 minutes of location
-- (to be implemented) Activity level plots for the past 30 minutes.
+- Activity level plots for the past 10 minutes.
 
 To retain some control over privacy, the aggregator performs some crude fuzzing of location data; users can register "sensitive" locations in the userInfo table, which, if a location data falls inside of, gets smeared out in the aggregated data.
 
