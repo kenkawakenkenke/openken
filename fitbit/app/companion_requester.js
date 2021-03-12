@@ -31,9 +31,12 @@ class CompanionUrlRequester {
         callback(response);
     }
 
-    request(url, callback) {
+    request(url, callback, errCallback) {
         if (messaging.peerSocket.readyState !== messaging.peerSocket.OPEN) {
             console.log("peer socket not open!! can't request.");
+            if (errCallback) {
+                errCallback("socket not open")
+            }
             return;
         }
 

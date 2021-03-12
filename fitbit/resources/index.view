@@ -1,7 +1,51 @@
 <svg class="background">
-  <text id="statusLabel" x="50%" y="50%-15">This is a test status label</text>
+  <text 
+   class="standardText"
+   x="40" 
+   y="12%"
+   >💓</text>
+  <text 
+   id="labelHeartRate"
+   class="standardText"
+   x="65" 
+   y="12%"
+   >110</text>
+
+  <text 
+   class="standardText"
+   x="105" 
+   y="12%"
+   >🔋</text>
+  <text 
+   id="labelChargeLevel"
+   class="standardText"
+   x="130" 
+   y="12%"
+   >100%</text>
+
+  <text 
+   class="standardText"
+   x="190" 
+   y="12%"
+   >🚶</text>
+  <text 
+   id="labelWalkCount"
+   class="standardText"
+   x="215" 
+   y="12%"
+   >------</text>
+
+  <text id="labelClock" 
+  class="standardText"
+   x="10%" y="55%"
+   >12:48:50</text>
+
+  <text id="labelStatus" 
+  class="standardText"
+   x="40" y="90%-15"
+   >This is a test status label</text>
   
-  <use id="demoButton" href="#text-button" class="text-button bottom application-fill bottomButton">
+  <!-- <use id="demoButton" href="#text-button" class="text-button bottom application-fill bottomButton">
       <set href="#text" attributeName="text-buffer" to="Just a button" />
-  </use>
+  </use> -->
 </svg>

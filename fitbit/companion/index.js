@@ -16,6 +16,7 @@ messaging.peerSocket.addEventListener("open", (evt) => {
 });
 
 messaging.peerSocket.addEventListener("message", (evt) => {
+    console.log("companion received message");
     const payload = evt.data;
     if (!payload) {
         return;

@@ -11,8 +11,9 @@ class SensorDataCollector {
         const parentThis = this;
 
         const body = new BodyPresenceSensor();
-        body.start();
+        this.body = body;
         const hrm = new HeartRateSensor();
+        this.hrm = hrm;
         hrm.addEventListener("reading", () => {
             parentThis.latestData = {
                 timestamp: new Date().getTime(),
@@ -23,7 +24,11 @@ class SensorDataCollector {
             };
             parentThis.poll();
         });
-        hrm.start();
+    }
+
+    start() {
+        this.body.start();
+        this.hrm.start();
     }
 
     poll() {
@@ -35,12 +40,12 @@ class SensorDataCollector {
         this.latestData = undefined;
 
         const now = new Date().getTime();
-        const tSinceLastSend = now - (this.lastSent || 0);
-        if (tSinceLastSend < this.sendEveryMs) {
-            console.log("abort: not enough time: " + tSinceLastSend);
+        const readyToSend = !this.lastSend || (now - this.lastSend > this.sendEveryMs);
+        if (!readyToSend) {
+            // console.log("abort: not enough time: " + tSinceLastSend);
             return;
         }
-        this.lastSent = now;
+        this.lastSend = now;
 
         this.callback(dataToSend);
     }

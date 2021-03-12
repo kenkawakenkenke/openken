@@ -1,14 +1,27 @@
 .background {
-  viewport-fill: #000044;
+  viewport-fill: #000020;
 }
 
-#statusLabel {
+.standardText {
   fill: #ddddff;
-  font-size: 32;
+  font-size: 24;
   font-family: System-Regular;
   font-weight: bold;
-  text-anchor: middle;
-  text-length: 99;
+  text-anchor: start;
+}
+
+#labelStatus {
+  fill: #fd9595;
+  font-size: 28;
+  /* text-anchor: middle; */
+}
+
+#labelClock {
+  fill: #ffffff;
+  font-size: 70;
+  font-family: System-Bold;
+  font-weight: bold;
+  text-anchor: start;
 }
 
 .application-fill {
