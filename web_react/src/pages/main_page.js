@@ -17,6 +17,7 @@ import NumViewersModule from "../components/num_viewers_module.js";
 const useStyles = makeStyles((theme) => ({
     cards: {
         flexGro: 1,
+        margin: "8px",
     },
     cardModule: {
         margin: "8px",
@@ -43,11 +44,11 @@ function MainPage({ uid }) {
     }
 
     const cardContents = [
-        <NumViewersModule uid={uid} />,
         <ActivityStateModule dashboardData={dashboardData} />,
         <HeartRateModule dashboardData={dashboardData} />,
         <AccelerationModule dashboardData={dashboardData} />,
         <MapModule locationData={dashboardData.location || []} />,
+        <NumViewersModule uid={uid} />,
         <MetadataModule dashboardData={dashboardData} />,
     ];
     return <div>
@@ -57,7 +58,7 @@ function MainPage({ uid }) {
         <div className={classes.cards}>
             <Grid container spacing={1}>
                 {cardContents.map((cardContent, idx) =>
-                    <Grid item xs={6} md={4} key={`cardModule_${idx}`}>
+                    <Grid item xs={6} md={3} key={`cardModule_${idx}`}>
                         <Card elevation={3} className={classes.cardModule}>
                             {cardContent}
                         </Card>

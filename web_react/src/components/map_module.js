@@ -6,8 +6,8 @@ import { formatTimeFromNow } from "../util/time_format.js";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: "200px",
-        height: "200px",
+        width: "100%",
+        height: "250px",
     },
 }));
 
@@ -31,12 +31,12 @@ function computeViewBounds(polyline, latestLocation) {
     let [top, left] = polyline[0];
     let [bottom, right] = polyline[0];
     polyline.forEach(([lat, lng]) => {
-        top = Math.min(top, lat);
+        top = Math.max(top, lat);
         left = Math.min(left, lng);
-        bottom = Math.max(bottom, lat);
+        bottom = Math.min(bottom, lat);
         right = Math.max(right, lng);
     });
-    const expander = 1.25;
+    const expander = 1.1;
     const halfWidth = Math.max(centerLng - left, right - centerLng);
     const halfHeight = Math.max(centerLat - bottom, top - centerLat);
     left = centerLng - halfWidth * expander;
@@ -109,13 +109,13 @@ function MapModule({ locationData }) {
     return <div>
         <CardContent>
             場所によっては位置情報がぼかされています
-        <MapContainer
+            <MapContainer
                 className={classes.root}
                 whenCreated={mapInstance => {
                     setMapRef(mapInstance);
                 }}
-                scrollWheelZoom={true}
-                style={{ height: '320px', width: "480px" }}>
+                scrollWheelZoom={false}
+            >
                 <TileLayer
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

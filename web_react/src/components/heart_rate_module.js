@@ -61,8 +61,8 @@ function HeartRateModule({ dashboardData }) {
     const duration = moment.duration(now.diff(fitbitUpdateTime), "milliseconds");
     if (duration.asSeconds() > 120) {
         heartRate = 0;
-        heartRateText = "-";
-        warningText = "2分以上データがありません";
+        heartRateText = "";
+        warningText = "最新のデータがありません";
     }
 
     return <div>

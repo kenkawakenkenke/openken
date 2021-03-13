@@ -33,8 +33,8 @@ function NumViewersModule({ uid }) {
         setMinViewerTime(getMinViewerTime());
     }, [viewerID]);
     if (error) {
-        // console.log("error", error);
-        return <div>Error:{error}</div>
+        console.log("error", error);
+        return <div>Error:{JSON.stringify(error)}</div>
     }
     return <div>
         <CardContent>
