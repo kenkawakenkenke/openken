@@ -19,10 +19,11 @@ let labelConnectionLost = document.getElementById("labelConnectionLost");
 
 let labelStatus = document.getElementById("labelStatus");
 let labelStatusSpec;
-function showStatusText(text) {
+function showStatusText(text, ok = true) {
     labelStatusSpec = {
         t: new Date(),
         text,
+        ok,
     };
     // labelStatus.text = localeTimeString(new Date()) + ": " + text;
 }
@@ -48,6 +49,7 @@ function updateStatusText(now) {
     }
     const elapsedSecs = (now.getTime() - labelStatusSpec.t.getTime()) / 1000;
     labelStatus.text = `${getFriendlyDuration(elapsedSecs)}: ${labelStatusSpec.text}`;
+    labelStatus.style.fill = labelStatusSpec.ok ? "#ffffff" : "ff0000";
 }
 
 // For some reason, toLoaleTimeString ignores timezones.
@@ -64,11 +66,11 @@ function submitReading(data) {
     if (waitingResponse) {
         console.log("==== Still waiting response, connection may be lost.");
         vibration.start("nudge-max");
-        labelConnectionLost.text = "Connection lost!!";
+        labelConnectionLost.style.visibility = "visible";
     }
 
     console.log(`Send: ${JSON.stringify(data)} `);
-    showStatusText("Sending...");
+    showStatusText("Sending...", true);
 
     // data.heartRate = 110;
     // data.chargeLevel = 100;
@@ -86,19 +88,22 @@ function submitReading(data) {
             waitingResponse = false;
             const parsed = JSON.parse(response);
             if (parsed.status === "err") {
-                showStatusText("Error");
+                showStatusText("Error", false);
                 vibration.start("nudge-max");
                 console.log("failed: " + parsed.reason);
+                labelConnectionLost.style.visibility = "visible";
                 return;
             }
-            showStatusText("Sent!!");
+            showStatusText("Sent!!", true);
             console.log("got response: " + JSON.stringify(parsed));
+            labelConnectionLost.style.visibility = "hidden";
         },
         err => {
             waitingResponse = false;
             vibration.start("nudge-max");
-            showStatusText("Failed send");
+            showStatusText("Failed send", false);
             showMessage("Failed send: " + new Date());
+            labelConnectionLost.visibility = "visible";
         });
 }
 const dataCollector = new SensorDataCollector(30, submitReading);
@@ -107,25 +112,25 @@ const dataCollector = new SensorDataCollector(30, submitReading);
 me.appTimeoutEnabled = false;
 vibration.start("bump");
 
-showStatusText("Waiting for companion app..");
+showStatusText("Waiting for companion app..", true);
 
 const requester = new CompanionUrlRequester();
 
 messaging.peerSocket.addEventListener("open", (evt) => {
-    showStatusText("Ready");
+    showStatusText("Ready", true);
     console.log("Ready to send or receive messages on the device");
     dataCollector.start();
 });
 
 messaging.peerSocket.addEventListener("close", (evt) => {
     console.error(`Connection closed: ${JSON.stringify(evt)} `);
-    showStatusText("Connection closed: " + JSON.stringify(evt));
+    showStatusText("Connection closed: " + JSON.stringify(evt), false);
     vibration.start("nudge-max");
 });
 
 messaging.peerSocket.addEventListener("error", (err) => {
     console.error(`Connection error: ${err.code} - ${err.message} `);
-    showStatusText("Connection error: " + err.message);
+    showStatusText("Connection error: " + err.message, false);
     vibration.start("nudge-max");
 });
 
@@ -135,8 +140,17 @@ clock.granularity = "seconds"; // seconds, minutes, or hours
 clock.addEventListener("tick", (evt) => {
     const now = new Date();
     labelClock.text = monoDigits(localeTimeString(now));
-    // labelClock.text = evt.date.toTimeString();
     updateStatusText(now);
+
+    // Metrics
+    const latestData = dataCollector.latestData;
+    if (latestData && latestData.heartRate) {
+        labelHeartRate.text = `${latestData.heartRate} `;
+    }
+    if (latestData && latestData.chargeLevel) {
+        labelChargeLevel.text = `${Math.floor(latestData.chargeLevel)}%`
+    }
+    labelWalkCount.text = `${today.adjusted.steps}`
 });
 
 // From: https://dev.fitbit.com/build/guides/user-interface/css/

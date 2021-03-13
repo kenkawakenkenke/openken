@@ -43,14 +43,11 @@
   <text id="labelConnectionLost" 
   class="standardText"
    x="40" y="75%"
-   ></text>
+   >Connection lost!!</text>
 
   <text id="labelStatus" 
   class="standardText"
    x="40" y="90%-15"
-   >This is a test status label</text>
-  
-  <!-- <use id="demoButton" href="#text-button" class="text-button bottom application-fill bottomButton">
-      <set href="#text" attributeName="text-buffer" to="Just a button" />
+   >This is a test status label hey hey hey hey hey hey hey</text>
   </use> -->
 </svg>

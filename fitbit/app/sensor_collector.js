@@ -17,6 +17,7 @@ class SensorDataCollector {
         const hrm = new HeartRateSensor();
         this.hrm = hrm;
         hrm.addEventListener("reading", () => {
+            // console.log("set latest data");
             parentThis.latestData = {
                 timestamp: new Date().getTime(),
                 heartRate: hrm.heartRate,
@@ -24,6 +25,7 @@ class SensorDataCollector {
                 sleep: sleep.state,
                 chargeLevel: Math.floor(battery.chargeLevel),
             };
+            parentThis.dataToSend = parentThis.latestData;
             parentThis.poll();
         });
 
@@ -46,12 +48,12 @@ class SensorDataCollector {
     }
 
     poll() {
-        const dataToSend = this.latestData;
+        const dataToSend = this.dataToSend;
         if (!dataToSend) {
             console.log("abort: no data");
             return;
         }
-        this.latestData = undefined;
+        this.dataToSend = undefined;
 
         const now = new Date().getTime();
         if (!this.lastSend) {

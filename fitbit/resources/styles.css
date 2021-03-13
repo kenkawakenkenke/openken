@@ -28,6 +28,7 @@
 #labelConnectionLost {
   fill: #ff0000;
   font-size: 32;
+  visibility: "hidden";
 }
 
 .application-fill {
