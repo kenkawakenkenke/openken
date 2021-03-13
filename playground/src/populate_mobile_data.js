@@ -22,7 +22,7 @@ function generateData() {
             activity: Math.random() < 0.5 ? "walking" : "still",
         },
         // This is just a locally generated (emulated) uid, so we're not leaking anything.
-        uid: "9CzOXQHx1FJlpdmcuCQaxMKTdn7c"
+        uid: "Zksri0skjhtYTYt9MYNJJDiNwDvf"
     };
     return data;
 }

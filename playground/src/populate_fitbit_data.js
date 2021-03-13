@@ -15,11 +15,12 @@ const data = {
     chargeLevel: Math.floor(Math.random() * 100),
     heartRate: Math.floor(80 + Math.random() * 20),
     sleep: Math.random() < 0.5 ? "awake" : "asleep",
+    zeroCross: Math.floor(Math.random() * 100),
 };
 
 (async () => {
     // Note, this is just an example access token, so we're not leaking anything here.
-    const accessToken = "9EGJGNDmTTdBHr1FgVQ463isumnDxN0dzEIP1RpogupRaGPE";
+    const accessToken = "pY3KE6ulwllTGCF3XherHrzmw5ZoYs8oShetqZgCvJTfKR2R";
 
     await sendData(data, accessToken);
 })();
