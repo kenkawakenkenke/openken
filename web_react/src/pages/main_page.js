@@ -18,11 +18,10 @@ import HeartRateModule from "../components/heart_rate_module.js";
 import AccelerationModule from "../components/acceleration_module.js";
 import MetadataModule from "../components/metadata_module.js";
 import MapModule from "../components/map_module.js";
+import { useAuth } from "../auth/firebase_auth_wth_claims.js";
 
 const useStyles = makeStyles((theme) => ({
     cards: {
-        // display: "flex",
-        // flexFlow: "row wrap",
         flexGro: 1,
     },
     cardModule: {
@@ -37,6 +36,9 @@ function MainPage({ uid }) {
     );
     const classes = useStyles();
 
+    const auth = useAuth();
+    console.log("auth", auth.isSignedIn);
+
     usePollingUpdate(5000);
 
     if (error) {
@@ -45,7 +47,6 @@ function MainPage({ uid }) {
     if (loading) {
         return <div>Loading...</div>;
     }
-
     if (!dashboardData) {
         return <div>No data</div>
     }
@@ -64,7 +65,7 @@ function MainPage({ uid }) {
         <div className={classes.cards}>
             <Grid container spacing={1}>
                 {cardContents.map((cardContent, idx) =>
-                    <Grid item xs={4} key={`cardModule_${idx}`}>
+                    <Grid item xs={6} md={4} key={`cardModule_${idx}`}>
                         <Card elevation={3} className={classes.cardModule}>
                             {cardContent}
                         </Card>
