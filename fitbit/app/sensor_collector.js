@@ -69,7 +69,7 @@ class SensorDataCollector {
 
         // Add buffered accelerometer data
         dataToSend.zeroCross = computeZeroCross(this.accelerometerDataBuffer);
-        console.log(`accel:${this.accelerometerDataBuffer.length()} ${dataToSend.zeroCross}`);
+        // console.log(`accel:${this.accelerometerDataBuffer.length()} ${dataToSend.zeroCross}`);
         this.accelerometerDataBuffer.clear();
         // this.accelerometerDataBuffer.forEach(acc => console.log("zeroX:" + acc.zeroCross));
         // dataToSend.accel = this.accelerometerDataBuffer;
