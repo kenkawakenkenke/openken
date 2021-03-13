@@ -1,15 +1,9 @@
 import firebase from "firebase/app";
+import { useDocumentData } from "react-firebase-hooks/firestore";
 import {
-    useDocumentData
-} from "react-firebase-hooks/firestore";
-import moment from "moment-timezone";
-
-import {
-    Card, CardContent, Grid, Typography
+    Card, Grid, Typography
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-
-import { formatTimeFromNow } from "../util/time_format.js";
 import { usePollingUpdate } from "../common/update_every.js";
 
 // Sub modules
@@ -18,7 +12,7 @@ import HeartRateModule from "../components/heart_rate_module.js";
 import AccelerationModule from "../components/acceleration_module.js";
 import MetadataModule from "../components/metadata_module.js";
 import MapModule from "../components/map_module.js";
-import { useAuth } from "../auth/firebase_auth_wth_claims.js";
+import NumViewersModule from "../components/num_viewers_module.js";
 
 const useStyles = makeStyles((theme) => ({
     cards: {
@@ -36,9 +30,6 @@ function MainPage({ uid }) {
     );
     const classes = useStyles();
 
-    const auth = useAuth();
-    console.log("auth", auth.isSignedIn);
-
     usePollingUpdate(5000);
 
     if (error) {
@@ -52,11 +43,12 @@ function MainPage({ uid }) {
     }
 
     const cardContents = [
+        <NumViewersModule uid={uid} />,
         <ActivityStateModule dashboardData={dashboardData} />,
         <HeartRateModule dashboardData={dashboardData} />,
         <AccelerationModule dashboardData={dashboardData} />,
         <MapModule locationData={dashboardData.location || []} />,
-        <MetadataModule dashboardData={dashboardData} />
+        <MetadataModule dashboardData={dashboardData} />,
     ];
     return <div>
         <Typography variant="h2">

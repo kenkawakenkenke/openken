@@ -2,6 +2,7 @@ import './App.css';
 import { BrowserRouter as Router, Route, useParams } from "react-router-dom";
 import { FirebaseAuthContextProvider } from "./auth/firebase_auth_wth_claims.js";
 import { ToastContextProvider } from "./common/toast.js";
+import { UuidContextProvider } from "./common/uuid.js";
 
 import AccessTokenPage from "./pages/access_token_page.js";
 import MainPage from "./pages/main_page.js";
@@ -21,12 +22,14 @@ function App() {
     <div className="App">
       <FirebaseAuthContextProvider>
         <ToastContextProvider>
-          <Router>
-            <Route exact path="/" component={MainPageRouter} />
-            <Route exact path="/user/:uid" component={MainPageRouter} />
-            <Route exact path="/settings" component={UserInfoPage} />
-            <Route exact path="/access_token" component={AccessTokenPage} />
-          </Router>
+          <UuidContextProvider>
+            <Router>
+              <Route exact path="/" component={MainPageRouter} />
+              <Route exact path="/user/:uid" component={MainPageRouter} />
+              <Route exact path="/settings" component={UserInfoPage} />
+              <Route exact path="/access_token" component={AccessTokenPage} />
+            </Router>
+          </UuidContextProvider>
         </ToastContextProvider>
       </FirebaseAuthContextProvider>
     </div>

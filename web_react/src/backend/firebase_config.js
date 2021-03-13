@@ -18,10 +18,10 @@ const firebaseConfig = {
 if (firebase.apps.length === 0) {
     firebase.initializeApp(firebaseConfig);
     if (process.env.NODE_ENV === "development") {
-        // const localHost = "localhost";
-        // firebase.app().functions("asia-northEast1").useEmulator("localhost", 5001);
-        // firebase.firestore().useEmulator(localHost, 8080);
-        // firebase.auth().useEmulator(`http://${localHost}:9099/`);
+        const localHost = "localhost";
+        firebase.app().functions("asia-northEast1").useEmulator("localhost", 5001);
+        firebase.firestore().useEmulator(localHost, 8080);
+        firebase.auth().useEmulator(`http://${localHost}:9099/`);
     }
 }
 export default firebase;

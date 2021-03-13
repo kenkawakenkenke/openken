@@ -20,7 +20,7 @@ const data = {
 
 (async () => {
     // Note, this is just an example access token, so we're not leaking anything here.
-    const accessToken = "pY3KE6ulwllTGCF3XherHrzmw5ZoYs8oShetqZgCvJTfKR2R";
+    const accessToken = "tIKIHkTpC8GjS1GOUJTT7qj1Voe1z2Faqt9njEeZDMF926hh";
 
     await sendData(data, accessToken);
 })();
