@@ -98,7 +98,7 @@ function getLocation(userInfo, mobileData) {
                     semantic: matchingSensitiveLocation.label,
                     latitude: matchingSensitiveLocation.latitude,
                     longitude: matchingSensitiveLocation.longitude,
-                    radius: matchingSensitiveLocation.radius,
+                    radius: Math.max(1000, matchingSensitiveLocation.radius),
                 };
             }
             return {
