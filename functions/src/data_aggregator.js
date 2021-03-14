@@ -55,6 +55,11 @@ function activityState(maybeLatestFitbitData, maybeLatestMobileData) {
         return "asleep";
     }
     if (maybeLatestMobileData && maybeLatestMobileData.activity) {
+        if (maybeLatestMobileData.activity === "still") {
+            if (maybeLatestFitbitData && maybeLatestFitbitData.zeroCross >= 50) {
+                return "exercise";
+            }
+        }
         return maybeLatestMobileData.activity;
     }
     // Probably "awake".
