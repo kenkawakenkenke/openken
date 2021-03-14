@@ -20,6 +20,8 @@ import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableResult;
 import com.ken.openken.R;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -33,6 +35,7 @@ public class DataLoggerService extends Service {
     // Received data.
     private Location latestLocation;
     private String latestActivityState;
+    private Instant tLastSent;
 
     public DataLoggerService() {
         super();
@@ -88,7 +91,19 @@ public class DataLoggerService extends Service {
         startForeground(1, notification);
     }
 
+    final long MIN_TIME_BETWEEN_SENDS_SEC = 20;
+
     public void notifyDataUpdate(String updatedDataset) {
+        Instant now = Instant.now();
+        if (tLastSent != null) {
+            long timeElapsed = Duration.between(tLastSent, now).getSeconds();
+            if (timeElapsed < MIN_TIME_BETWEEN_SENDS_SEC) {
+                Log.w("zzz", "Only "+timeElapsed+" seconds, ignoring.");
+                return;
+            }
+        }
+        tLastSent = now;
+
         Log.w("zzz", "data update for "+updatedDataset+": "
             + "activity="+ latestActivityState
             +" location="+latestLocation);
@@ -122,7 +137,7 @@ public class DataLoggerService extends Service {
                             startForegroundNotification(timeStr+" updated "+updatedDataset);
 
                             String result = (String) task.getResult().getData();
-                            Log.w("zzz", "result: " + result);
+//                            Log.w("zzz", "result: " + result);
                             return result;
                         }catch(Exception e) {
                             Log.w("zzz", "exception in getresult: "+e);
