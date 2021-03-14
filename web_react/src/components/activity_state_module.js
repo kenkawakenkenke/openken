@@ -6,7 +6,7 @@ const useStyles = makeStyles((theme) => ({
     root: {
         margin: "8px",
         fontSize: "4em",
-        width: "300px",
+        // width: "300px",
     },
 }));
 

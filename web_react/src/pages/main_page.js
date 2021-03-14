@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
         flexGro: 1,
         margin: "8px",
     },
+    cardGrid: {
+        minWidth: "300px",
+    },
     cardModule: {
         margin: "8px",
     },
@@ -58,7 +61,7 @@ function MainPage({ uid }) {
         <div className={classes.cards}>
             <Grid container spacing={1}>
                 {cardContents.map((cardContent, idx) =>
-                    <Grid item xs={6} md={3} key={`cardModule_${idx}`}>
+                    <Grid item xs={12} sm={3} key={`cardModule_${idx}`} className={classes.cardGrid}>
                         <Card elevation={3} className={classes.cardModule}>
                             {cardContent}
                         </Card>
@@ -66,7 +69,7 @@ function MainPage({ uid }) {
                 )}
             </Grid>
         </div>
-    </div>;
+    </div >;
 }
 
 export default MainPage;
