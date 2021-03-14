@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
         margin: "8px",
     },
     cardGrid: {
-        minWidth: "300px",
+        minWidth: "380px",
     },
     cardModule: {
         margin: "8px",
