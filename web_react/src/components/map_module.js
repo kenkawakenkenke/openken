@@ -140,7 +140,7 @@ function MapModule({ locationData }) {
             </MapContainer>
         </CardContent>
         <CardActions>
-            最終データ更新：{formatTimeFromNow(latestLocation.t)}
+            最終データ更新：{formatTimeFromNow(latestLocation.t.toDate())}
         </CardActions>
     </div>;
 }
