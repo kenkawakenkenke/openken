@@ -234,7 +234,7 @@ function SignedInPage() {
         {error && `Error: ${error}`}
 
         <SensitiveLocationSettingsModule
-            locations={userInfo.sensitiveLocation || []}
+            locations={userInfo?.sensitiveLocation || []}
             onUpdate={newLocations => {
                 doSave({
                     ...userInfo,
