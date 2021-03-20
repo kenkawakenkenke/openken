@@ -10,6 +10,8 @@ const { createPresentationData } = require("./data_aggregator.js");
 exports.hello = functions.region("asia-northeast1")
     .https
     .onRequest(async (req, res) => {
+        // const uid = "lwwdKIncbFfZXyHcxXEtqueDcme2";
+        // console.log(checkPreviousRunTime(uid));
         res.status(200).send("Hello cloud functions!");
         return;
     });

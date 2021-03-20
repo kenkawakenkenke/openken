@@ -148,10 +148,48 @@ function aggregate(userInfo, fitbitData, mobileData) {
     // Last update times
     aggregateData.tLastUpdate = lastUpdateTime(latestFitbitData, latestMobileData);
 
+    // Last run time.
+    aggregateData.tLastRun = new Date();
+
     return aggregateData;
 }
 
+// Ensure we've elapsed enough time since the last run.
+async function checkPreviousRunTime(uid) {
+    const existingDashboardRef = await firestore
+        .collection("realtimeDashboard")
+        .doc(uid).get();
+    if (!existingDashboardRef) {
+        console.log("OK: no existing dashboard data");
+        return true;
+    }
+    const existingDashboardData = existingDashboardRef.data();
+    if (!existingDashboardData) {
+        console.log("OK: no existing dashboard data");
+        return true;
+    }
+    const prevRunTimestamp = existingDashboardData.tLastRun;
+    if (!prevRunTimestamp) {
+        console.log("OK: no existing prev dashboard timestamp");
+        return true;
+    }
+    const prevRun = moment(prevRunTimestamp.toDate());
+    const now = moment();
+
+    const duration = now.diff(prevRun, "seconds");
+    if (duration >= 60) {
+        console.log("OK: time elapsed since last run:" + duration);
+        return true;
+    }
+    console.log("NG: only " + duration + " seconds elapsed since last run");
+    return false;
+}
+
 exports.createPresentationData = async (uid) => {
+    if (!checkPreviousRunTime(uid)) {
+        return;
+    }
+
     const historicalTimeCutoff = moment().add(-10, "minutes");
 
     const fitbitData = await fetchFitbitData(uid, historicalTimeCutoff);
@@ -168,4 +206,5 @@ exports.createPresentationData = async (uid) => {
         .collection("realtimeDashboard")
         .doc(uid)
         .set(aggregatedData);
+    console.log("exported");
 };
