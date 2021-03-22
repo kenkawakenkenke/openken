@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import { CardActions, CardContent } from '@material-ui/core';
 import { formatTimeFromNow } from "../util/time_format.js";
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -61,6 +62,7 @@ function coordToMapCoord(coord) {
 }
 function MapModule({ locationData }) {
     const classes = useStyles();
+    const { t } = useTranslation();
     const [mapRef, setMapRef] = useState();
 
     let polyline = locationData
@@ -108,7 +110,8 @@ function MapModule({ locationData }) {
     }
     return <div>
         <CardContent>
-            場所によっては位置情報がぼかされています
+            {t("Location is blurred out for some places")}
+
             <MapContainer
                 className={classes.root}
                 whenCreated={mapInstance => {
@@ -140,7 +143,7 @@ function MapModule({ locationData }) {
             </MapContainer>
         </CardContent>
         <CardActions>
-            最終データ更新：{formatTimeFromNow(latestLocation.t.toDate())}
+            {t("Last update")} {formatTimeFromNow(latestLocation.t.toDate(), t)}
         </CardActions>
     </div>;
 }

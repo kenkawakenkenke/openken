@@ -8,6 +8,7 @@ import {
 } from 'recharts';
 import { makeStyles } from '@material-ui/core/styles';
 import { CardActions, CardContent } from "@material-ui/core";
+import { useTranslation } from "react-i18next";
 
 const useStyles = makeStyles((theme) => ({
     Contents: {
@@ -35,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function HeartRateModule({ dashboardData }) {
+    const { t } = useTranslation();
     const classes = useStyles();
     if (!dashboardData.tLastUpdate.fitbit) {
         return <div></div>;
@@ -62,7 +64,7 @@ function HeartRateModule({ dashboardData }) {
     if (duration.asSeconds() > 120) {
         heartRate = 0;
         heartRateText = "";
-        warningText = "最新のデータがありません";
+        warningText = t("No recent data");
     }
 
     return <div>
@@ -99,7 +101,7 @@ function HeartRateModule({ dashboardData }) {
                 </LineChart>
             </ResponsiveContainer>
         </CardContent>
-        <CardActions>最終データ更新：{formatTimeFromNow(fitbitUpdateTime)}</CardActions>
+        <CardActions>{t("Last update")} {formatTimeFromNow(fitbitUpdateTime, t)}</CardActions>
     </div>;
 }
 export default HeartRateModule;

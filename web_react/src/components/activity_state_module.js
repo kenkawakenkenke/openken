@@ -2,6 +2,7 @@ import {
     CardContent, Typography
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { useTranslation } from 'react-i18next';
 const useStyles = makeStyles((theme) => ({
     root: {
         margin: "8px",
@@ -13,26 +14,26 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function textForActivity(activity) {
+function textForActivity(activity, t) {
     switch (activity) {
         case "vehicle":
-            return "乗り物に乗ってます";
+            return t("On a vehicle");
         case "bicycle":
-            return "自転車に乗ってます";
+            return t("On a bicycle");
         case "still":
-            return "じっとしています";
+            return t("Resting");
         case "exercise":
-            return "活動してます";
+            return t("Being active");
         case "walking":
-            return "歩いています";
+            return t("Walking");
         case "running":
-            return "走っています";
+            return t("Running");
         case "asleep":
-            return "寝ています";
+            return t("Sleeping");
         case "awake":
-            return "起きています";
+            return t("Awake");
         default:
-            return "Unknown";
+            return t("Unknown");
     }
 }
 
@@ -61,10 +62,11 @@ function imgForActivity(activity) {
 
 function ActivityStateModule({ dashboardData }) {
     const classes = useStyles();
+    const { t } = useTranslation();
     return <div>
         <CardContent className={classes.root}>
             <Typography variant="h4">
-                {textForActivity(dashboardData.activityState)}
+                {textForActivity(dashboardData.activityState, t)}
                 <img src={imgForActivity(dashboardData.activityState)} className={classes.activityImg} />
             </Typography>
         </CardContent>

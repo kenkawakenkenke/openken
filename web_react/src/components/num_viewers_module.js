@@ -8,8 +8,11 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { usePollingUpdate } from "../common/update_every.js";
+import { useTranslation } from "react-i18next";
 
 function NumViewersModule({ uid }) {
+    const { t } = useTranslation();
+
     const getMinViewerTime = () => moment().add(-1, "minutes");
     const [minViewerTime, setMinViewerTime] = useState(getMinViewerTime());
     const [viewers, loading, error] = useCollectionDataOnce(
@@ -39,7 +42,7 @@ function NumViewersModule({ uid }) {
     return <div>
         <CardContent>
             <Typography variant="h5">
-                現在の見守り人数：
+                {t("Number watching")}
             </Typography>
 
             <Typography variant="h3">

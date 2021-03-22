@@ -6,6 +6,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import { formatTimeFromNow } from "../util/time_format.js";
 import { CardActions, CardContent } from "@material-ui/core";
+import { useTranslation } from "react-i18next";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -15,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
 
 function AccelerationModule({ dashboardData }) {
     const classes = useStyles();
+    const { t } = useTranslation();
     const data = dashboardData.accel.map(
         accelData => ({
             t: accelData.t.toDate().getTime(),
@@ -46,14 +48,14 @@ function AccelerationModule({ dashboardData }) {
                     />
                     <YAxis
                         domain={[0, maxY]}
-                        label={{ value: '活動量', angle: -90, position: 'insideLeft' }} />
+                        label={{ value: t("Activity level"), angle: -90, position: 'insideLeft' }} />
                     <Tooltip />
                     <Line dataKey="v" fill="#8884d8" />
                 </LineChart>
             </ResponsiveContainer>
         </CardContent>
         <CardActions>
-            最終データ更新：{formatTimeFromNow(fitbitUpdateTime)}
+            {t("Last update")} {formatTimeFromNow(fitbitUpdateTime, t)}
         </CardActions>
     </div>
 }
