@@ -4,7 +4,10 @@
             "Activity level":"Activity level",
             "Last update": "Last update:",
             "No data": "No data",
-            "Number watching": "Number watching"
+            "Number watching": "Number watching",
+            "aboutDescription": "When I was recently discharged from hospital after months of cancer treatment, my family was worried about me going out for walks alone. I made this dashboard to put them at ease (somewhat), and as an extra, opened this for access the entire internet just to see what happens when the world can watch you.",
+            "aboutGithub": "The project is opensourced <1>here</1>, so you could build your own Open[You].",
+            "aboutFollowMe": "If you have comments, recommendations, or simply liked this project, please follow me on Twitter:"
         }
     },
     "ja": {
@@ -29,7 +32,11 @@
             "Unknown": "不明",
             "No recent data":  "最新のデータがありません",
             "Location is blurred out for some places": "場所によっては位置情報がぼかされています",
-            "Number watching": "現在の見守り人数"
+            "Number watching": "現在の見守り人数",
+            "About OpenKen": "OpenKenについて",
+            "aboutDescription": "最近病気をして退院したのですが、一人で散歩や買い物に行ったりすると家族に心配をかけてしまいます。そこで、いつでも家族が私の状態を見守れるようにこういうサイトを作りました。ついでに、全インターネットが私のデータを見れるときなにが起きるか実験しようと思い、誰にでも閲覧できるようにしてみました。",
+            "aboutGithub": "このプロジェクトは<1>Githubで</1>オープンソースされています。Open[あなた]を作りたい人は是非チャレンジしてみてください。",
+            "aboutFollowMe": "コメントやアイディアがある方、単に興味持った方は是非作者の河本をTwitterでフォローしてください："
         }
     }
 }
