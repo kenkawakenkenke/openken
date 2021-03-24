@@ -134,7 +134,7 @@ function vote(activities) {
 (async () => {
     const db = firebase.firestore();
 
-    const from = moment().add(-20, "days");
+    const from = moment("2021-03-15");
 
     const fineGranSize = 5;
     const coarseGranSize = 60;
