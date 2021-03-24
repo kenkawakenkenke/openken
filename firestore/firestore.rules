@@ -10,5 +10,11 @@ service cloud.firestore {
     match /viewer/{document=**} {
       allow read, write: if true;
     }
+    match /coarseActivities30/{document=**} {
+      allow read: if true;
+    }
+    match /coarseActivities60/{document=**} {
+      allow read: if true;
+    }
   }
 }

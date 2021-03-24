@@ -37,26 +37,26 @@ function textForActivity(activity, t) {
     }
 }
 
-function imgForActivity(activity) {
+export function imgForActivity(activity) {
     switch (activity) {
         case "vehicle":
-            return "imgs/activities/activity_still.gif";
+            return "/imgs/activities/activity_still.gif";
         case "bicycle":
-            return "imgs/activities/activity_still.gif";
+            return "/imgs/activities/activity_still.gif";
         case "still":
-            return "imgs/activities/activity_still.gif";
+            return "/imgs/activities/activity_still.gif";
         case "exercise":
-            return "imgs/activities/activity_exercise.gif";
+            return "/imgs/activities/activity_exercise.gif";
         case "walking":
-            return "imgs/activities/activity_walk.gif";
+            return "/imgs/activities/activity_walk.gif";
         case "running":
-            return "imgs/activities/activity_running.gif";
+            return "/imgs/activities/activity_running.gif";
         case "asleep":
-            return "imgs/activities/activity_sleep.jpg";
+            return "/imgs/activities/activity_sleep.jpg";
         case "awake":
-            return "imgs/activities/activity_still.gif";
+            return "/imgs/activities/activity_still.gif";
         default:
-            return "imgs/activities/activity_still.gif";
+            return "/imgs/activities/activity_still.gif";
     }
 }
 

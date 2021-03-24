@@ -5,12 +5,15 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "copyprod": "./src/scripts/copyprod.sh",
+    "startemulator": "firebase emulators:start --import=data/exported/latest"
   },
   "author": "Ken Kawamoto <ken@kawamoto.co.uk> (http://kawamoto.co.uk/)",
   "license": "ISC",
   "dependencies": {
     "firebase-admin": "^9.5.0",
+    "moment-timezone": "^0.5.33",
     "node-fetch": "^2.6.1"
   }
 }
