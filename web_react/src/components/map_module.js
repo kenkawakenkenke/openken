@@ -98,6 +98,7 @@ function MapModule({ locationData }) {
         if (!mapRef) {
             return;
         }
+        console.log(polyline, viewBoundTop, viewBoundLeft, viewBoundBottom, viewBoundRight);
         mapRef.fitBounds(
             [[viewBoundTop, viewBoundLeft],
             [viewBoundBottom, viewBoundRight]]
